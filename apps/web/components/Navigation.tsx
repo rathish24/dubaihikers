@@ -13,7 +13,7 @@ export function Navigation({ cartCount, onCartOpen }: NavigationProps) {
   return (
     <header className="site-header">
       <a className="brand" href="#home" aria-label="Dubai Hikers home">
-        DUBAI<span aria-hidden="true">/</span>HIKERS
+        <span className="brand-wordmark">DUBAI<span aria-hidden="true">/</span>HIKERS</span>
         <small>GUIDED MOUNTAIN HIKES</small>
       </a>
       <nav id="primary-navigation" className={open ? "nav-links open" : "nav-links"} aria-label="Main navigation">

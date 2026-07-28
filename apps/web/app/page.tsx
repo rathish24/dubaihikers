@@ -42,10 +42,45 @@ export default function Home() {
       </section>
 
       <footer className="site-footer">
-        <a className="brand" href="#home">DUBAI<span aria-hidden="true">/</span>HIKERS<small>GUIDED MOUNTAIN HIKES</small></a>
-        <p>Explore responsibly. Return stronger.</p>
-        <nav aria-label="Footer navigation"><a href="#events">Hikes</a><a href="#services">Services</a><a href="#reviews">Stories</a><a href="mailto:hello@dubaihikers.ae">Contact</a></nav>
-        <small>© 2026 DUBAI HIKERS · UNITED ARAB EMIRATES</small>
+        <div className="footer-main">
+          <div className="footer-brand">
+            <a className="brand" href="#home">
+              <span className="brand-wordmark">DUBAI<span aria-hidden="true">/</span>HIKERS</span>
+              <small>GUIDED MOUNTAIN HIKES</small>
+            </a>
+            <p>Explore responsibly. Return stronger.</p>
+          </div>
+
+          <div className="footer-column">
+            <h2>Explore</h2>
+            <nav aria-label="Footer navigation">
+              <a href="#events">Hikes</a>
+              <a href="#services">Services</a>
+              <a href="#reviews">Stories</a>
+            </nav>
+          </div>
+
+          <div className="footer-column footer-contact">
+            <h2>Contact</h2>
+            <a href="mailto:hello@dubaihikers.ae">hello@dubaihikers.ae</a>
+            <p>United Arab Emirates</p>
+          </div>
+
+          <div className="footer-column footer-social">
+            <h2>Social Media</h2>
+            <nav aria-label="Social media">
+              <a href="https://www.facebook.com/" target="_blank" rel="noreferrer">Facebook</a>
+              <a href="https://www.instagram.com/" target="_blank" rel="noreferrer">Instagram</a>
+              <a href="https://www.youtube.com/" target="_blank" rel="noreferrer">YouTube</a>
+              <a href="https://x.com/" target="_blank" rel="noreferrer">X (Twitter)</a>
+            </nav>
+          </div>
+        </div>
+
+        <div className="footer-bottom">
+          <small>© 2026 DUBAI HIKERS</small>
+          <small>GUIDED MOUNTAIN HIKES · UNITED ARAB EMIRATES</small>
+        </div>
       </footer>
     </main>
   );
