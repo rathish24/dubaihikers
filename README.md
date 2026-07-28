@@ -34,6 +34,8 @@ apps/web/
 
 See [docs/architecture.md](docs/architecture.md) for design decisions, dependency rules, scalability guidance, and the production backend roadmap.
 
+The visual layer is governed by the project-local skills in `.agents/skills`: frontend direction, design-taste preflight, and the responsive design system. The implemented contracts include fluid tokens, standard breakpoints, container-aware event cards, 44px controls, responsive images, reduced motion, and system dark mode.
+
 ## Requirements
 
 - Node.js 22.13 or newer

@@ -152,17 +152,13 @@ The visual system is centralized in `app/globals.css` because the site is curren
 - Global element normalization
 - Shared typography
 - Component class contracts
-- Responsive breakpoints at 1100px, 800px, and 520px
+- Fluid spacing and type tokens, container queries, and standard 640px, 768px, and 1024px breakpoints
 - Visible focus states
 - Reduced-motion behavior
 
 As additional routes or independent product areas appear, styles should be moved beside the owning feature using CSS Modules. Global CSS should then retain only tokens, resets, typography, and truly shared utilities.
 
-The event catalogue uses:
-
-- Three columns on wide screens
-- Two columns on tablet and small desktop screens
-- One compact column on mobile
+The event catalogue uses mobile-first responsive contracts: one column on small screens, two on tablet, and three on wide screens. Card internals adapt with a container query. Controls preserve a 44px minimum target, display type uses bounded `clamp()` scales, metadata remains readable, and system dark mode uses the same semantic color family.
 
 Event titles and major display typography use fluid sizing. Images use `next/image`, responsive `sizes`, fixed aspect ratios, and an allow-listed remote host.
 

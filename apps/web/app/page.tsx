@@ -16,33 +16,33 @@ export default function Home() {
         <div className="about-copy">
           <p className="kicker">YOUR HIKE LEADER</p>
           <h2>RAK ISN&apos;T A<br />BACKDROP. <i>IT&apos;S HOME.</i></h2>
-          <p>I guide hikers through the mountains I know best—with thoughtful planning, honest difficulty ratings, and calm decisions on the trail. Whether it is your first wadi walk or a serious summit day, the goal is the same: move safely, learn something, and come back stronger.</p>
-          <div className="credentials"><span>✓ Certified hike leader</span><span>✓ First-aid prepared</span><span>✓ Local route knowledge</span></div>
+          <p>I guide hikers through the mountains I know best,with thoughtful planning, honest difficulty ratings, and calm decisions on the trail. Whether it is your first wadi walk or a serious summit day, the goal is the same: move safely, learn something, and come back stronger.</p>
+          <div className="credentials"><span>Certified hike leader</span><span>First-aid prepared</span><span>Local route knowledge</span></div>
         </div>
       </section>
 
       <Testimonials />
 
       <section className="safety">
-        <SectionHeading eyebrow="BEFORE YOU BOOK" light>
+        <SectionHeading eyebrow="BEFORE YOU BOOK">
           THE MOUNTAIN<br />SETS THE <i>RULES.</i>
         </SectionHeading>
         <div className="safety-grid">
-          <article><span>01</span><h3>Choose honestly</h3><p>Match the event difficulty to your current fitness and recent hiking experience.</p></article>
-          <article><span>02</span><h3>Pack properly</h3><p>Hiking shoes, sufficient water, sun protection, and the event-specific kit are essential.</p></article>
-          <article><span>03</span><h3>Conditions decide</h3><p>Routes may change or be postponed for heat, rain, visibility, or unsafe trail conditions.</p></article>
-          <article><span>04</span><h3>Stay together</h3><p>Follow the leader, respect the pace, leave no trace, and never separate from the group.</p></article>
+          <article><h3>Choose honestly</h3><p>Match the event difficulty to your current fitness and recent hiking experience.</p></article>
+          <article><h3>Pack properly</h3><p>Hiking shoes, sufficient water, sun protection, and the event-specific kit are essential.</p></article>
+          <article><h3>Conditions decide</h3><p>Routes may change or be postponed for heat, rain, visibility, or unsafe trail conditions.</p></article>
+          <article><h3>Stay together</h3><p>Follow the leader, respect the pace, leave no trace, and never separate from the group.</p></article>
         </div>
       </section>
 
       <section className="final-cta" aria-labelledby="final-cta-title">
         <p className="kicker">YOUR NEXT STORY STARTS EARLY</p>
         <h2 id="final-cta-title">MEET ME<br />ON THE <i>TRAIL.</i></h2>
-        <a className="cta-link" href="#events">VIEW UPCOMING HIKES <span aria-hidden="true">↗</span></a>
+        <a className="cta-link" href="#events">View upcoming hikes</a>
       </section>
 
       <footer className="site-footer">
-        <a className="brand" href="#home">DUBAI<span>↗</span>HIKERS<small>GUIDED MOUNTAIN HIKES</small></a>
+        <a className="brand" href="#home">DUBAI<span aria-hidden="true">/</span>HIKERS<small>GUIDED MOUNTAIN HIKES</small></a>
         <p>Explore responsibly. Return stronger.</p>
         <nav aria-label="Footer navigation"><a href="#events">Hikes</a><a href="#services">Services</a><a href="#reviews">Stories</a><a href="mailto:hello@dubaihikers.ae">Contact</a></nav>
         <small>© 2026 DUBAI HIKERS · UNITED ARAB EMIRATES</small>

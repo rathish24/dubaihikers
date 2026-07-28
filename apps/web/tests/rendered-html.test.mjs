@@ -29,13 +29,14 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
   assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
 
   const html = await response.text();
-  assert.match(html, /<title>Dubai Hikers — Guided Mountain Hikes<\/title>/i);
-  assert.match(html, /FIND(?:<!-- -->)?<br\/>HIGHER/);
+  assert.match(html, /<title>Dubai Hikers \| Guided Mountain Hikes<\/title>/i);
+  assert.match(html, /FIND HIGHER(?:<!-- -->)?<br\/>/);
   assert.match(html, /UPCOMING GUIDED EVENTS/);
-  assert.match(html, /VIEW UPCOMING HIKES/);
+  assert.match(html, /View upcoming hikes/i);
   assert.match(html, /Ghaf Trail/);
   assert.match(html, /aria-label="Filter by difficulty"/);
   assert.doesNotMatch(html, /Your site is taking shape|Starter Project/);
+  assert.doesNotMatch(html, /[—–↗↘✓△]/);
 });
 
 test("keeps server and client responsibilities separated", async () => {

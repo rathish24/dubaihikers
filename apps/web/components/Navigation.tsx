@@ -13,10 +13,10 @@ export function Navigation({ cartCount, onCartOpen }: NavigationProps) {
   return (
     <header className="site-header">
       <a className="brand" href="#home" aria-label="Dubai Hikers home">
-        DUBAI<span>↗</span>HIKERS
+        DUBAI<span aria-hidden="true">/</span>HIKERS
         <small>GUIDED MOUNTAIN HIKES</small>
       </a>
-      <nav className={open ? "nav-links open" : "nav-links"} aria-label="Main navigation">
+      <nav id="primary-navigation" className={open ? "nav-links open" : "nav-links"} aria-label="Main navigation">
         <a href="#events" onClick={() => setOpen(false)}>Hikes</a>
         <a href="#services" onClick={() => setOpen(false)}>Services</a>
         <a href="#about" onClick={() => setOpen(false)}>About</a>
@@ -25,7 +25,7 @@ export function Navigation({ cartCount, onCartOpen }: NavigationProps) {
       <button className="cart-button" onClick={onCartOpen} aria-label={`Open tickets, ${cartCount} selected`}>
         Tickets <span>{cartCount}</span>
       </button>
-      <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open}>
+      <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="primary-navigation">
         {open ? "Close" : "Menu"}
       </button>
     </header>

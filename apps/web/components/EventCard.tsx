@@ -17,10 +17,8 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           src={event.image}
           alt={`${event.name} mountain trail`}
           fill
-          sizes="(max-width: 520px) 92vw, (max-width: 1100px) 46vw, 31vw"
+          sizes="(max-width: 639px) 92vw, (max-width: 1023px) 46vw, 31vw"
         />
-        <span className={`difficulty ${event.difficulty.toLowerCase()}`}>{event.difficulty}</span>
-        <span className="spots">{event.spots} spots</span>
       </button>
       <div className="event-card-body">
         <div className="event-date">
@@ -28,6 +26,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           <strong>{dayMonth}</strong>
         </div>
         <div>
+          <div className="event-status"><span className={`difficulty ${event.difficulty.toLowerCase()}`} >{event.difficulty}</span><span>{event.spots} spots</span></div>
           <p className="event-location">{event.location}</p>
           <h3>{event.name}</h3>
           <p className="event-meta">{event.time} · {event.duration} · {event.distance}</p>
@@ -35,7 +34,7 @@ export function EventCard({ event, onSelect }: EventCardProps) {
         <div className="event-price">
           <small>FROM</small>
           <strong>{formatMoney(event.price)}</strong>
-          <button onClick={() => onSelect(event)} aria-label={`Book ${event.name}`}>↗</button>
+          <button onClick={() => onSelect(event)}>View hike</button>
         </div>
       </div>
     </article>

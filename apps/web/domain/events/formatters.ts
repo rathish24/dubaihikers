@@ -21,6 +21,7 @@ export function formatEventDate(date: string): string {
 }
 
 export function splitEventDate(date: string): { weekday: string; dayMonth: string } {
-  const [weekday = "", dayMonth = ""] = formatEventDate(date).split(", ");
-  return { weekday, dayMonth };
+  const parts = dateFormatter.formatToParts(new Date(date + "T00:00:00Z"));
+  const value = (type: Intl.DateTimeFormatPartTypes) => parts.find((part) => part.type === type)?.value ?? "";
+  return { weekday: value("weekday"), dayMonth: (value("day") + " " + value("month")).trim() };
 }

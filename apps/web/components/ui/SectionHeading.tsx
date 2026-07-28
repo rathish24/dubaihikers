@@ -1,12 +1,11 @@
 type SectionHeadingProps = {
   eyebrow: string;
   children: React.ReactNode;
-  light?: boolean;
 };
 
-export function SectionHeading({ eyebrow, children, light = false }: SectionHeadingProps) {
+export function SectionHeading({ eyebrow, children }: SectionHeadingProps) {
   return (
-    <div className={light ? "section-title light" : "section-title"}>
+    <div className="section-title">
       <p className="kicker">{eyebrow}</p>
       <h2>{children}</h2>
     </div>

@@ -35,13 +35,12 @@ export function BookingExperience({ events: allEvents }: BookingExperienceProps)
         <Navigation cartCount={booking?.quantity ?? 0} onCartOpen={() => setCheckoutOpen(true)} />
         <div className="hero-content">
           <p className="eyebrow">CERTIFIED GUIDED HIKES · RAS AL KHAIMAH</p>
-          <h1>FIND<br />HIGHER<br /><i>GROUND.</i></h1>
+          <h1>FIND HIGHER<br /><i>GROUND.</i></h1>
           <div className="hero-foot">
-            <p>Local trails. Small groups.<br />The mountains, done right.</p>
-            <a href="#events" aria-label="Explore upcoming hikes">↘</a>
+            <p>Local trails. Small groups. The mountains, done right.</p>
+            <a href="#events">Explore upcoming hikes</a>
           </div>
         </div>
-        <div className="hero-badge"><span>10</span><small>MOUNTAIN TRAILS<br />ONE WILD HOME</small></div>
       </section>
 
       <section className="trust-strip" aria-label="Why hike with Dubai Hikers">

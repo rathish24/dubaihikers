@@ -23,12 +23,11 @@ export function EventModal({ event, onClose, onAdd }: EventModalProps) {
       <section ref={dialogRef} tabIndex={-1} className="event-modal" role="dialog" aria-modal="true" aria-labelledby="event-title">
         <button className="modal-close" onClick={onClose} aria-label="Close event details">Close ×</button>
         <div className="modal-visual">
-          <Image src={event.image} alt={`${event.name} trail landscape`} fill sizes="(max-width: 800px) 100vw, 42vw" priority />
-          <span className={`difficulty ${event.difficulty.toLowerCase()}`}>{event.difficulty}</span>
+          <Image src={event.image} alt={`${event.name} trail landscape`} fill sizes="(max-width: 767px) 100vw, 42vw" priority />
           <div><small>NEXT HIKE</small><strong>{formatEventDate(event.date)}</strong></div>
         </div>
         <div className="modal-content">
-          <p className="kicker">GUIDED EVENT · RAS AL KHAIMAH</p>
+          <p className="event-modal-status"><span className={`difficulty ${event.difficulty.toLowerCase()}`}>{event.difficulty}</span><span>{event.spots} spots available</span></p>
           <h2 id="event-title">{event.name}</h2>
           <p className="modal-lead">{event.description}</p>
           <div className="trail-stats">

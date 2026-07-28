@@ -11,9 +11,8 @@ export function Testimonials() {
         WHAT HIKERS<br /><i>BRING HOME.</i>
       </SectionHeading>
       <div className="testimonial-grid">
-        {testimonials.map((item, index) => (
+        {testimonials.map((item) => (
           <blockquote key={item.name}>
-            <span>0{index + 1}</span>
             <p>“{item.quote}”</p>
             <footer><strong>{item.name}</strong><small>{item.event}</small></footer>
           </blockquote>
