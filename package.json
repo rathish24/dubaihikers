@@ -1,0 +1,13 @@
+{
+  "name": "dubaihikers-platform",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.32.1",
+  "scripts": {
+    "dev": "pnpm --filter @dubaihikers/web dev",
+    "build": "pnpm --filter @dubaihikers/web build",
+    "test": "pnpm --filter @dubaihikers/web test",
+    "lint": "pnpm --filter @dubaihikers/web lint",
+    "db:generate": "pnpm --filter @dubaihikers/web db:generate"
+  }
+}

@@ -1,0 +1,52 @@
+import { Services } from "../components/Services";
+import { Testimonials } from "../components/Testimonials";
+import { SectionHeading } from "../components/ui/SectionHeading";
+import { trailEvents } from "../data/trails";
+import { BookingExperience } from "../features/booking/BookingExperience";
+
+export default function Home() {
+  return (
+    <main>
+      <BookingExperience events={trailEvents} />
+
+      <Services />
+
+      <section className="about-section" id="about">
+        <div className="about-photo"><span>LOCAL KNOWLEDGE<br />CERTIFIED LEADERSHIP</span></div>
+        <div className="about-copy">
+          <p className="kicker">YOUR HIKE LEADER</p>
+          <h2>RAK ISN&apos;T A<br />BACKDROP. <i>IT&apos;S HOME.</i></h2>
+          <p>I guide hikers through the mountains I know best—with thoughtful planning, honest difficulty ratings, and calm decisions on the trail. Whether it is your first wadi walk or a serious summit day, the goal is the same: move safely, learn something, and come back stronger.</p>
+          <div className="credentials"><span>✓ Certified hike leader</span><span>✓ First-aid prepared</span><span>✓ Local route knowledge</span></div>
+        </div>
+      </section>
+
+      <Testimonials />
+
+      <section className="safety">
+        <SectionHeading eyebrow="BEFORE YOU BOOK" light>
+          THE MOUNTAIN<br />SETS THE <i>RULES.</i>
+        </SectionHeading>
+        <div className="safety-grid">
+          <article><span>01</span><h3>Choose honestly</h3><p>Match the event difficulty to your current fitness and recent hiking experience.</p></article>
+          <article><span>02</span><h3>Pack properly</h3><p>Hiking shoes, sufficient water, sun protection, and the event-specific kit are essential.</p></article>
+          <article><span>03</span><h3>Conditions decide</h3><p>Routes may change or be postponed for heat, rain, visibility, or unsafe trail conditions.</p></article>
+          <article><span>04</span><h3>Stay together</h3><p>Follow the leader, respect the pace, leave no trace, and never separate from the group.</p></article>
+        </div>
+      </section>
+
+      <section className="final-cta" aria-labelledby="final-cta-title">
+        <p className="kicker">YOUR NEXT STORY STARTS EARLY</p>
+        <h2 id="final-cta-title">MEET ME<br />ON THE <i>TRAIL.</i></h2>
+        <a className="cta-link" href="#events">VIEW UPCOMING HIKES <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <footer className="site-footer">
+        <a className="brand" href="#home">DUBAI<span>↗</span>HIKERS<small>GUIDED MOUNTAIN HIKES</small></a>
+        <p>Explore responsibly. Return stronger.</p>
+        <nav aria-label="Footer navigation"><a href="#events">Hikes</a><a href="#services">Services</a><a href="#reviews">Stories</a><a href="mailto:hello@dubaihikers.ae">Contact</a></nav>
+        <small>© 2026 DUBAI HIKERS · UNITED ARAB EMIRATES</small>
+      </footer>
+    </main>
+  );
+}
