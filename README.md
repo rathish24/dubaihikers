@@ -1,6 +1,6 @@
 # Dubai Hikers
 
-Dubai Hikers is a responsive guided hiking-events website for mountain adventures across the UAE. Visitors can discover events, filter by difficulty, inspect trail details, and submit a prototype expression-of-interest form.
+Dubai Hikers is a responsive guided hiking-events website for mountain adventures across the UAE. Visitors can discover events, filter by difficulty, inspect trail details, and reserve places through the event registration flow.
 
 ## Technology
 
@@ -65,12 +65,12 @@ Open `http://localhost:3000`.
 Copy `.env.example` to `apps/web/.env.local` and provide:
 
 ```text
-NEXT_PUBLIC_SUPABASE_URL
-NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+SUPABASE_URL
+SUPABASE_PUBLISHABLE_KEY
 SUPABASE_SECRET_KEY
 ```
 
-The website uses the project URL and publishable key to read published events under RLS. The secret key is reserved for local migration and seed administration and must never be exposed to browser code.
+The server uses the project URL and publishable key to read published events under RLS. The registration API uses the same server URL with `SUPABASE_SECRET_KEY` for protected writes. None of these variables are exposed to browser code.
 
 Apply `supabase/migrations/202607290001_create_events.sql` in the Supabase SQL Editor, then seed the ten sample hikes:
 
@@ -94,6 +94,6 @@ boundaries. The tests do not read from or write to the live database.
 
 ## Current product scope
 
-The event catalogue is loaded dynamically from Supabase. The Join form remains front-end only and does not transmit or persist customer information.
+The event catalogue and registrations are persisted in Supabase. Registration writes pass through a validated server endpoint; browser code cannot set prices, payment state, or booking status directly.
 
 Before accepting real leads, connect the form to a validated backend and enforce duplicate detection with the hike ID and normalized phone number.

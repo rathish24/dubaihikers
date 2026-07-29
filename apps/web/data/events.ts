@@ -23,7 +23,7 @@ const availabilityLabels: Record<EventAvailability, string> = {
   open: "Available",
   few_spots: "Few spots left",
   full: "Fully booked",
-  waitlist: "Waitlist available",
+  waitlist: "Fully booked",
   closed: "Registration closed",
 };
 
@@ -31,7 +31,7 @@ const actionLabels: Record<EventAvailability, TrailEvent["actionLabel"]> = {
   open: "Join",
   few_spots: "Join",
   full: "Full",
-  waitlist: "Waitlist",
+  waitlist: "Full",
   closed: "Closed",
 };
 
@@ -83,8 +83,7 @@ function toTrailEvent(event: Event): TrailEvent {
     availabilityLabel: availabilityLabels[event.availability],
     actionLabel: actionLabels[event.availability],
     canRegister: event.availability === "open"
-      || event.availability === "few_spots"
-      || event.availability === "waitlist",
+      || event.availability === "few_spots",
     image: event.imageUrl,
     description: event.description,
     highlights: event.highlights,

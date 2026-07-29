@@ -382,7 +382,7 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
   .event-tools button.active { background: var(--accent); border-color: var(--accent); }
 }
 
-/* Front-end-only hike interest flow */
+/* Event registration flow */
 .event-price { display: flex; justify-content: flex-end; align-items: center; gap: .85rem; min-width: 170px; }
 .event-price > div { text-align: right; }
 .event-price > div small, .event-price > div strong { display: block; }
@@ -439,7 +439,7 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
   letter-spacing: .1em;
 }
 .join-form > label > span { color: var(--text-muted); font-weight: 600; }
-.join-form input:not([type=checkbox]), .join-form select {
+.join-form input:not([type=checkbox]), .join-form select, .join-form textarea {
   display: block;
   width: 100%;
   min-height: 48px;
@@ -452,7 +452,35 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
   font-size: 1rem;
   letter-spacing: normal;
 }
-.join-form input::placeholder { color: color-mix(in srgb, var(--text) 62%, transparent); }
+.join-form textarea { min-height: 106px; resize: vertical; line-height: 1.45; }
+.join-form input::placeholder, .join-form textarea::placeholder {
+  color: color-mix(in srgb, var(--text) 62%, transparent);
+}
+.join-form input:focus-visible, .join-form select:focus-visible, .join-form textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.join-form [aria-invalid=true]:not([type=checkbox]) { border-color: #b53726; }
+.join-form .field-help, .join-form .field-error {
+  display: block;
+  margin-top: .4rem;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: normal;
+  line-height: 1.4;
+}
+.join-form .field-help { color: var(--text-muted); }
+.join-form .field-error { color: #b53726; }
+.join-form .consent-error { margin: -.75rem 0 1rem 2rem; }
+.form-error {
+  margin: 0 0 1rem;
+  padding: .85rem 1rem;
+  border-left: 3px solid #b53726;
+  background: color-mix(in srgb, #b53726 9%, transparent);
+  color: var(--text);
+  font-size: .9rem;
+  line-height: 1.45;
+}
 .consent {
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr);
@@ -466,6 +494,7 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
 .consent input { width: 18px; height: 18px; margin: .1rem 0 0; accent-color: var(--accent); }
 .join-form-actions { display: grid; grid-template-columns: minmax(100px, .35fr) 1fr; gap: .75rem; }
 .join-form-actions .primary-button { grid-column: auto; }
+.join-form-actions button:disabled { cursor: wait; opacity: .65; }
 .secondary-button {
   min-height: 54px;
   padding: 14px 18px;
@@ -501,6 +530,14 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
   .join-action { grid-template-columns: 1fr; }
   .join-form-actions { grid-template-columns: 1fr; }
   .event-price { min-width: 0; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .join-form .field-error { color: #ff9b87; }
+  .form-error {
+    border-left-color: #ff9b87;
+    background: rgba(255,155,135,.1);
+  }
 }
 
 /* Structured editorial footer */

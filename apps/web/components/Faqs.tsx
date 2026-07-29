@@ -29,9 +29,9 @@ const questions = [
       "Safety comes first. Heat, rain, poor visibility, or trail conditions may require a route change or postponement. We will contact interested hikers with any update.",
   },
   {
-    question: "Does tapping Join confirm my place?",
+    question: "Does tapping Book now confirm my place?",
     answer:
-      "Not yet. Join registers your interest without taking payment. We will contact you on WhatsApp to confirm availability and help with changes or cancellation.",
+      "Yes. We check availability again before confirming your places. No online payment is required, and we will contact you on WhatsApp with preparation details.",
   },
 ] as const;
 

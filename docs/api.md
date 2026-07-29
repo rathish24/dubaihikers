@@ -1,6 +1,6 @@
 # API Design
 
-The API layer is planned for Firebase HTTPS callable functions or standard HTTPS functions. Public clients must not write booking or payment state directly to Firestore.
+The API layer uses Next.js-compatible HTTP route handlers backed by Supabase PostgreSQL. Public clients must not write registration or payment state directly to Supabase.
 
 ## Public Endpoints
 
@@ -19,22 +19,22 @@ Query parameters:
 
 Returns public event details and current availability.
 
-### `POST /api/checkout/session`
+### `POST /api/registrations`
 
-Validates event availability and creates a short-lived payment session.
+Validates the customer details, rechecks event availability, and creates a confirmed registration when sufficient places remain.
 
 Request:
 
 ```json
 {
   "eventId": "event-id",
-  "quantity": 2,
-  "customer": {
-    "name": "Example Hiker",
-    "email": "hiker@example.com",
-    "mobile": "+971500000000"
-  },
-  "waiverAccepted": true
+  "contactName": "Example Hiker",
+  "contactEmail": "hiker@example.com",
+  "contactPhone": "+971500000000",
+  "numberOfHikers": 2,
+  "customerNotes": "We will travel together.",
+  "waiverAccepted": true,
+  "idempotencyKey": "963476ca-f3fa-4dd6-82de-55a6875cc405"
 }
 ```
 
@@ -42,8 +42,14 @@ Response:
 
 ```json
 {
-  "checkoutUrl": "https://payment-provider.example/session",
-  "expiresAt": "2026-08-01T08:10:00Z"
+  "registration": {
+    "referenceNumber": "DH-2F3B54E823",
+    "status": "confirmed",
+    "numberOfHikers": 2,
+    "unitPrice": 125,
+    "totalAmount": 250,
+    "currency": "AED"
+  }
 }
 ```
 

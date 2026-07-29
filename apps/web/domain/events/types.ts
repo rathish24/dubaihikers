@@ -17,7 +17,7 @@ export type TrailEvent = {
   elevation: string;
   spots: number;
   availabilityLabel: string;
-  actionLabel: "Join" | "Waitlist" | "Full" | "Closed";
+  actionLabel: "Join" | "Full" | "Closed";
   canRegister: boolean;
   image: string;
   description: string;

@@ -24,19 +24,22 @@ flowchart LR
     Visitor["Visitor"] --> Web["Dubai Hikers web app"]
     Web --> EventsRepository["Event repository"]
     EventsRepository --> Supabase["Supabase PostgreSQL"]
-    Web --> BookingAPI["Booking API (future)"]
-    BookingAPI --> D1["D1 database (future)"]
-    BookingAPI --> Payment["Payment provider (future)"]
-    BookingAPI --> Email["Confirmation service (future)"]
+    Web --> RegistrationAPI["Registration API"]
+    RegistrationAPI --> RegistrationRepository["Registration repository"]
+    RegistrationRepository --> Supabase
+    RegistrationAPI -. future .-> Payment["Payment provider"]
+    RegistrationAPI -. future .-> Email["Confirmation service"]
 ```
 
-The current release implements dynamic event discovery through Supabase and a local interest form. Future lead persistence and payment services remain explicit extension points.
+The current release implements dynamic event discovery and event registration through Supabase. The registration domain is isolated in `@dubaihikers/registrations`; the UI submits through a replaceable client interface and never imports Supabase. Payment remains an explicit future extension point.
 
 ## 3. Source structure
 
 ```text
 apps/web/
 ├── app/
+│   ├── api/
+│   │   └── registrations/route.ts
 │   ├── layout.tsx
 │   ├── page.tsx
 │   └── globals.css
@@ -46,7 +49,6 @@ apps/web/
 │   │   └── useDialogAccessibility.ts
 │   ├── EventCard.tsx
 │   ├── EventModal.tsx
-│   ├── CheckoutDrawer.tsx
 │   └── marketing sections
 ├── domain/
 │   └── events/
@@ -54,16 +56,29 @@ apps/web/
 │       └── formatters.ts
 ├── features/
 │   └── booking/
-│       └── BookingExperience.tsx
+│       ├── BookingExperience.tsx
+│       └── registrationClient.ts
 ├── data/
 │   └── events.ts
-├── db/
-│   ├── index.ts
-│   └── schema.ts
-├── worker/
-│   └── index.ts
+├── utils/
+│   └── supabase/
+│       ├── server.ts
+│       └── admin.ts
 └── tests/
     └── rendered-html.test.mjs
+
+packages/
+├── events/
+│   ├── src/
+│   └── tests/
+└── registrations/
+    ├── src/
+    └── tests/
+
+supabase/
+├── migrations/
+├── scripts/
+└── seed/
 ```
 
 ## 4. Dependency rules
@@ -100,8 +115,6 @@ These rules prevent circular dependencies and make individual layers replaceable
 
 - Difficulty filter state
 - Selected event state
-- Current booking selection
-- Checkout visibility
 
 ```mermaid
 flowchart TD
@@ -110,14 +123,15 @@ flowchart TD
     Booking --> Filters["Difficulty filters"]
     Booking --> Grid["Event cards"]
     Booking --> Modal["Event detail dialog"]
-    Booking --> Checkout["Checkout dialog"]
+    Modal --> RegistrationClient["Registration client interface"]
+    RegistrationClient --> API["POST /api/registrations"]
 ```
 
 This keeps the static page available in the first server response while limiting hydration to the interactive experience.
 
 ## 6. Domain model
 
-`packages/events/src/types.ts` owns the persisted event domain. `domain/events/types.ts` owns the web presentation shape:
+`packages/events/src/types.ts` owns the persisted event domain. `packages/registrations/src/types.ts` owns the registration request and receipt contracts. `domain/events/types.ts` owns the web presentation shape:
 
 - `Difficulty`
 - `TrailEvent`
@@ -139,8 +153,8 @@ Components follow these contracts:
 Examples:
 
 - `EventCard` renders a `TrailEvent` and emits `onSelect(event)`.
-- `EventModal` renders event details and emits `onAdd(event, quantity)`.
-- `CheckoutDrawer` renders a `BookingItem` and emits close/clear actions.
+- `EventModal` renders event details and submits through an injected `RegistrationClient`.
+- `HttpRegistrationClient` implements the browser-to-API transport without exposing Supabase to the component.
 - `SectionHeading` provides a shared section-heading structure.
 - `useDialogAccessibility` provides Escape handling, focus containment, initial focus, and focus restoration for modal surfaces.
 
@@ -182,6 +196,8 @@ Future automated coverage should add axe-based checks and browser tests for focu
 
 The current adapter is `data/events.ts`, backed by the `@dubaihikers/events` repository contract. Replacing Supabase should not require changing cards, dialogs, formatters, or booking UI.
 
+Registration persistence follows the same boundary. The API depends on `@dubaihikers/registrations`, while the modal depends only on the `RegistrationClient` interface.
+
 Recommended progression:
 
 ```text
@@ -192,51 +208,66 @@ Supabase adapter
 Cached event queries and administrative publishing
 ```
 
-## 11. Production booking architecture
+## 11. Registration architecture
 
-The current checkout does not create a real booking. A production flow should use a server-controlled state machine:
+The current no-payment flow creates a confirmed registration after the server atomically rechecks availability. Events without enough capacity are displayed as fully booked; the customer UI does not offer a waitlist.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> Draft
-    Draft --> InventoryHeld: validate and hold
-    InventoryHeld --> PaymentPending: create payment
-    PaymentPending --> Confirmed: payment webhook
-    PaymentPending --> Failed: declined or expired
-    InventoryHeld --> Expired: hold timeout
-    Failed --> PaymentPending: retry
-    Confirmed --> [*]
+    [*] --> Pending
+    Pending --> Confirmed: places available
+    Confirmed --> Cancelled: customer or organiser cancels
+    Confirmed --> Refunded: future paid booking refunded
 ```
 
-Required server-side concerns:
+Current server-side guarantees:
 
 - Schema validation at the API boundary
-- Transactional inventory holds
+- Transactional capacity updates
 - Idempotency keys
-- Payment-provider webhooks
 - Authoritative price calculation
 - Booking status persistence
-- Hold expiration
 - Structured error responses
-- Rate limiting and abuse protection
-- Audit logging without sensitive-data leakage
-- Email confirmation retries
 
 Never trust client-provided prices, availability, totals, or payment status.
 
-## 12. Persistence model roadmap
+Payment-provider webhooks, rate limiting, audit logging, and confirmation delivery remain future production concerns.
 
-Suggested entities:
+## 12. Persistence model
 
-```text
-events
-event_occurrences
-inventory_holds
-bookings
-booking_items
-customers
-payment_attempts
-waiver_acceptances
+```mermaid
+erDiagram
+    AUTH_USERS o|--o{ EVENT_REGISTRATIONS : "optionally owns"
+    EVENTS ||--o{ EVENT_REGISTRATIONS : "receives"
+
+    EVENTS {
+        uuid id PK
+        text slug UK
+        timestamptz starts_at
+        numeric price
+        integer capacity
+        integer available_slots
+        event_status status
+        event_availability availability
+    }
+
+    EVENT_REGISTRATIONS {
+        uuid id PK
+        text reference_number UK
+        uuid event_id FK
+        uuid user_id FK
+        text contact_name
+        text contact_email
+        text contact_phone
+        smallint number_of_hikers
+        text customer_notes
+        numeric unit_price
+        numeric total_amount
+        registration_status status
+        registration_payment_status payment_status
+        uuid idempotency_key UK
+        timestamptz waiver_accepted_at
+    }
 ```
 
 Database migrations should be generated and reviewed whenever the schema changes. Personally identifiable information should be minimized and protected according to the applicable UAE requirements and payment-provider responsibilities.
@@ -245,6 +276,9 @@ Database migrations should be generated and reviewed whenever the schema changes
 
 Current automated checks verify:
 
+- Event repository behavior
+- Registration validation and normalization
+- Registration repository mapping and safe errors
 - Production build output
 - Server-rendered product metadata and content
 - Primary CTA presence
@@ -255,9 +289,9 @@ Current automated checks verify:
 
 Recommended next layers:
 
-1. Unit tests for formatters and booking transitions.
-2. React interaction tests for filters and quantities.
-3. Browser tests for navigation, modal focus, checkout, and responsive behavior.
+1. Unit tests for formatters and registration status transitions.
+2. React interaction tests for filters and registration form states.
+3. Browser tests for navigation, modal focus, registration, and responsive behavior.
 4. API contract tests when backend endpoints exist.
 5. Integration tests for inventory and payment webhooks.
 6. Performance budgets for JavaScript, images, and Core Web Vitals.

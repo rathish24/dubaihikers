@@ -1,5 +1,5 @@
 import vinext from "vinext";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import hostingConfig from "./.openai/hosting.json";
 import { sites } from "./build/sites-vite-plugin";
 
@@ -33,7 +33,12 @@ const localBindingConfig = {
     : [],
 };
 
-export default defineConfig(async () => {
+export default defineConfig(async ({ mode }) => {
+  const workspaceSupabaseEnv = loadEnv(mode, "../..", "SUPABASE_");
+  for (const [name, value] of Object.entries(workspaceSupabaseEnv)) {
+    process.env[name] ??= value;
+  }
+
   // Keep Wrangler and Miniflare state project-local. These are non-secret tool
   // settings; application environment belongs in ignored `.env*` files.
   process.env.WRANGLER_WRITE_LOGS ??= "false";
@@ -42,8 +47,15 @@ export default defineConfig(async () => {
 
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
   const { cloudflare } = await import("@cloudflare/vite-plugin");
+  const workerBindingConfig = mode === "development"
+    ? { ...localBindingConfig, vars: workspaceSupabaseEnv }
+    : localBindingConfig;
 
   return {
+    // The workspace owns one ignored root .env for server-side Supabase access.
+    // Without this, Vite only loads apps/web/.env* and API routes cannot see
+    // SUPABASE_SECRET_KEY.
+    envDir: "../..",
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,
@@ -52,7 +64,7 @@ export default defineConfig(async () => {
       sites(),
       cloudflare({
         viteEnvironment: { name: "rsc", childEnvironments: ["ssr"] },
-        config: localBindingConfig,
+        config: workerBindingConfig,
       }),
     ],
   };

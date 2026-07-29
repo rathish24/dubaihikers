@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { RegistrationReceipt } from "@dubaihikers/registrations";
 import { EventCard } from "../../components/EventCard";
 import { EventModal } from "../../components/EventModal";
 import { Navigation } from "../../components/Navigation";
@@ -12,14 +13,52 @@ type BookingExperienceProps = {
   loadError?: string | null;
 };
 
+function applyConfirmedRegistration(
+  event: TrailEvent,
+  receipt: RegistrationReceipt,
+): TrailEvent {
+  if (event.id !== receipt.eventId || receipt.status !== "confirmed") return event;
+
+  const remainingSpots = Math.max(0, event.spots - receipt.numberOfHikers);
+  if (remainingSpots === 0) {
+    return {
+      ...event,
+      spots: 0,
+      availabilityLabel: "Fully booked",
+      actionLabel: "Full",
+      canRegister: false,
+    };
+  }
+
+  return {
+    ...event,
+    spots: remainingSpots,
+    availabilityLabel: remainingSpots === 1
+      ? "1 spot available"
+      : `${remainingSpots} spots available`,
+  };
+}
+
 export function BookingExperience({ events: allEvents, loadError = null }: BookingExperienceProps) {
   const [difficulty, setDifficulty] = useState<"All" | Difficulty>("All");
+  const [catalogueEvents, setCatalogueEvents] = useState(allEvents);
   const [selectedEvent, setSelectedEvent] = useState<TrailEvent | null>(null);
 
   const events = useMemo(
-    () => difficulty === "All" ? allEvents : allEvents.filter((event) => event.difficulty === difficulty),
-    [allEvents, difficulty],
+    () => difficulty === "All"
+      ? catalogueEvents
+      : catalogueEvents.filter((event) => event.difficulty === difficulty),
+    [catalogueEvents, difficulty],
   );
+
+  function applyRegistration(receipt: RegistrationReceipt) {
+    if (receipt.status !== "confirmed") return;
+
+    setCatalogueEvents((currentEvents) =>
+      currentEvents.map((event) => applyConfirmedRegistration(event, receipt)));
+    setSelectedEvent((selected) =>
+      selected ? applyConfirmedRegistration(selected, receipt) : null);
+  }
 
   return (
     <>
@@ -74,6 +113,7 @@ export function BookingExperience({ events: allEvents, loadError = null }: Booki
         key={selectedEvent?.id ?? "no-event"}
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
+        onRegistrationComplete={applyRegistration}
       />
     </>
   );

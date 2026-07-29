@@ -36,7 +36,7 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
   assert.match(html, /aria-label="Filter by difficulty"/);
   assert.match(html, /<h2 id="faqs-title">FAQs<\/h2>/);
   assert.match(html, /Is this suitable for my first mountain hike\?/);
-  assert.match(html, /Does tapping Join confirm my place\?/);
+  assert.match(html, /Does tapping Book now confirm my place\?/);
   assert.doesNotMatch(html, /Your site is taking shape|Starter Project/);
   assert.doesNotMatch(html, /[—–↗↘✓△]/);
 });
@@ -58,8 +58,9 @@ test("keeps server and client responsibilities separated", async () => {
   assert.match(bookingFeature, /aria-pressed=/);
   assert.match(eventTypes, /export type TrailEvent/);
   assert.doesNotMatch(eventTypes, /BookingItem/);
-  assert.match(eventModal, /Submit interest/);
-  assert.match(eventModal, /not sent or saved anywhere/);
+  assert.match(eventModal, /Book now/);
+  assert.match(eventModal, /customerNotes/);
+  assert.match(eventModal, /RegistrationClient/);
   assert.doesNotMatch(eventModal, /fetch\(|localStorage|sessionStorage/);
   assert.match(dialogHook, /event\.key === "Escape"/);
   assert.match(dialogHook, /previouslyFocused\?\.focus\(\)/);
