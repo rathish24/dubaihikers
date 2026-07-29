@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@dubaihikers/events": "workspace:*",
+    "@dubaihikers/notifications": "workspace:*",
     "@dubaihikers/registrations": "workspace:*",
     "@fontsource/barlow-condensed": "^5.3.0",
     "@fontsource/source-sans-3": "^5.3.0",

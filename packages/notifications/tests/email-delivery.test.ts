@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import type { EmailDeliveryRepository } from "../services/email/deliveryRepository";
+import type { EmailDeliveryRepository } from "../src/deliveryRepository";
 import type {
   EmailSendResult,
   RegistrationEmailService,
-} from "../services/email/registrationEmail";
-import { sendRegistrationEmail } from "../services/email/sendRegistrationEmail";
+} from "../src/registrationEmail";
+import { sendRegistrationEmail } from "../src/sendRegistrationEmail";
 
 function createDeliveryRepository() {
   const calls: Array<[string, ...unknown[]]> = [];

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "pnpm --filter @dubaihikers/web dev",
     "build": "pnpm --filter @dubaihikers/web build",
-    "test": "pnpm --filter @dubaihikers/events test && pnpm --filter @dubaihikers/registrations test && pnpm --filter @dubaihikers/web test",
+    "test": "pnpm --filter @dubaihikers/events test && pnpm --filter @dubaihikers/registrations test && pnpm --filter @dubaihikers/notifications test && pnpm --filter @dubaihikers/web test",
     "lint": "pnpm --filter @dubaihikers/web lint",
     "db:generate": "pnpm --filter @dubaihikers/web db:generate",
     "db:seed:events": "node --env-file=.env --env-file-if-exists=apps/web/.env.local supabase/scripts/seed-events.mjs"

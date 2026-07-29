@@ -67,18 +67,20 @@ test("keeps server and client responsibilities separated", async () => {
 });
 
 test("keeps registration email delivery and content outside the route handler", async () => {
-  const [route, emailService, deliveryTask, htmlTemplate, textTemplate] = await Promise.all([
+  const [route, emailConfig, emailService, deliveryTask, htmlTemplate, textTemplate] = await Promise.all([
     readFile(new URL("../app/api/registrations/route.ts", import.meta.url), "utf8"),
-    readFile(new URL("../services/email/registrationEmail.ts", import.meta.url), "utf8"),
-    readFile(new URL("../services/email/sendRegistrationEmail.ts", import.meta.url), "utf8"),
-    readFile(new URL("../services/email/templates/registration-received.html", import.meta.url), "utf8"),
-    readFile(new URL("../services/email/templates/registration-received.txt", import.meta.url), "utf8"),
+    readFile(new URL("../config/notifications.ts", import.meta.url), "utf8"),
+    readFile(new URL("../../../packages/notifications/src/registrationEmail.ts", import.meta.url), "utf8"),
+    readFile(new URL("../../../packages/notifications/src/sendRegistrationEmail.ts", import.meta.url), "utf8"),
+    readFile(new URL("../../../packages/notifications/src/templates/registration-received.html", import.meta.url), "utf8"),
+    readFile(new URL("../../../packages/notifications/src/templates/registration-received.txt", import.meta.url), "utf8"),
   ]);
 
   assert.match(route, /await repository\.create\(input\)/);
   assert.match(route, /after\(\(\) =>\s+sendRegistrationEmail/);
   assert.doesNotMatch(route, /api\.resend\.com|Your next trail starts here/);
-  assert.match(emailService, /REGISTRATION_NOTIFICATION_EMAIL/);
+  assert.match(emailConfig, /REGISTRATION_NOTIFICATION_EMAIL/);
+  assert.doesNotMatch(emailService, /process\.env|REGISTRATION_NOTIFICATION_EMAIL/);
   assert.match(emailService, /Idempotency-Key/);
   assert.match(deliveryTask, /recordDelivered/);
   assert.match(deliveryTask, /recordUndelivered/);

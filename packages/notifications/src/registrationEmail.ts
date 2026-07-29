@@ -17,7 +17,7 @@ export interface RegistrationEmailService {
   ): Promise<EmailSendResult>;
 }
 
-type ResendEmailConfig = {
+export type ResendEmailConfig = {
   apiKey: string;
   from: string;
   recipient: string;
@@ -89,23 +89,4 @@ export class ResendRegistrationEmailService implements RegistrationEmailService 
 
     return { providerMessageId: result.id };
   }
-}
-
-export function getRegistrationEmailRecipient(): string | null {
-  return process.env.REGISTRATION_NOTIFICATION_EMAIL ?? null;
-}
-
-export function createRegistrationEmailService():
-  | RegistrationEmailService
-  | null {
-  const apiKey = process.env.RESEND_API_KEY;
-  const recipient = getRegistrationEmailRecipient();
-  if (!apiKey || !recipient) return null;
-
-  return new ResendRegistrationEmailService({
-    apiKey,
-    recipient,
-    from: process.env.RESEND_EMAIL_FROM
-      ?? "Dubai Hikers <onboarding@resend.dev>",
-  });
 }

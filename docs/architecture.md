@@ -72,7 +72,10 @@ packages/
 ├── events/
 │   ├── src/
 │   └── tests/
-└── registrations/
+├── registrations/
+    ├── src/
+    └── tests/
+└── notifications/
     ├── src/
     └── tests/
 
@@ -132,7 +135,7 @@ This keeps the static page available in the first server response while limiting
 
 ## 6. Domain model
 
-`packages/events/src/types.ts` owns the persisted event domain. `packages/registrations/src/types.ts` owns the registration request and receipt contracts. `domain/events/types.ts` owns the web presentation shape:
+`packages/events/src/types.ts` owns the persisted event domain. `packages/registrations/src/types.ts` owns the registration request and receipt contracts. `packages/notifications` owns provider-independent email contracts, the Resend adapter, delivery persistence, orchestration, and templates. The web app owns only environment-based notification composition. `domain/events/types.ts` owns the web presentation shape:
 
 - `Difficulty`
 - `TrailEvent`
@@ -234,7 +237,7 @@ Never trust client-provided prices, availability, totals, or payment status.
 
 Payment-provider webhooks, rate limiting, audit logging, and confirmation delivery remain future production concerns.
 
-The current registration route sends a minimal booking-reference email once after persistence succeeds. Email content is stored in standalone HTML, text, and metadata templates. A Next.js `after()` task performs the send after the registration response is returned and records the final result as `delivered` or `undelivered` in `registration_email_deliveries`. There is no queue or automatic retry; delivery failure does not roll back or hide a successful registration.
+The current registration route sends a minimal booking-reference email once after persistence succeeds. Reusable notification contracts, provider adapters, persistence, orchestration, and standalone templates live in `@dubaihikers/notifications`; the web app supplies runtime configuration. A Next.js `after()` task performs the send after the registration response is returned and records the final result as `delivered` or `undelivered` in `registration_email_deliveries`. There is no queue or automatic retry; delivery failure does not roll back or hide a successful registration.
 
 ## 12. Persistence model
 

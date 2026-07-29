@@ -34,6 +34,9 @@ packages/events/
 ├── src/repository.ts       Replaceable repository contract
 └── src/supabase.ts         Supabase repository implementation
 
+packages/registrations/      Registration contracts, validation, and persistence
+packages/notifications/      Email contracts, provider adapter, delivery tracking, and templates
+
 supabase/
 ├── migrations/             Reviewed PostgreSQL migrations
 ├── seed/                   Versioned sample event data

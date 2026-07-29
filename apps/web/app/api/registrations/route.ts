@@ -1,16 +1,18 @@
 import {
+  SupabaseEmailDeliveryRepository,
+  sendRegistrationEmail,
+} from "@dubaihikers/notifications";
+import {
   RegistrationRepositoryError,
   RegistrationValidationError,
   SupabaseRegistrationRepository,
   parseRegistrationInput,
 } from "@dubaihikers/registrations";
 import { after, NextResponse } from "next/server";
-import { SupabaseEmailDeliveryRepository } from "../../../services/email/deliveryRepository";
 import {
   createRegistrationEmailService,
   getRegistrationEmailRecipient,
-} from "../../../services/email/registrationEmail";
-import { sendRegistrationEmail } from "../../../services/email/sendRegistrationEmail";
+} from "../../../config/notifications";
 import { createAdminClient } from "../../../utils/supabase/admin";
 
 export const dynamic = "force-dynamic";
