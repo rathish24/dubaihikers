@@ -27,8 +27,9 @@ flowchart LR
     Web --> RegistrationAPI["Registration API"]
     RegistrationAPI --> RegistrationRepository["Registration repository"]
     RegistrationRepository --> Supabase
+    RegistrationAPI --> EmailAdapter["Resend email adapter"]
+    EmailAdapter --> NotificationEmail["Temporary notification recipient"]
     RegistrationAPI -. future .-> Payment["Payment provider"]
-    RegistrationAPI -. future .-> Email["Confirmation service"]
 ```
 
 The current release implements dynamic event discovery and event registration through Supabase. The registration domain is isolated in `@dubaihikers/registrations`; the UI submits through a replaceable client interface and never imports Supabase. Payment remains an explicit future extension point.
@@ -233,6 +234,8 @@ Never trust client-provided prices, availability, totals, or payment status.
 
 Payment-provider webhooks, rate limiting, audit logging, and confirmation delivery remain future production concerns.
 
+The current registration route queues a minimal booking-reference email after persistence succeeds. Email content is stored in standalone HTML, text, and metadata templates. A Next.js `after()` task sends the email after the registration response is returned and records `queued`, `sending`, `sent`, or `failed` in `registration_email_deliveries`. Delivery failure does not roll back or hide a successful registration.
+
 ## 12. Persistence model
 
 ```mermaid
@@ -267,6 +270,20 @@ erDiagram
         registration_payment_status payment_status
         uuid idempotency_key UK
         timestamptz waiver_accepted_at
+    }
+
+    EVENT_REGISTRATIONS ||--o| REGISTRATION_EMAIL_DELIVERIES : "has"
+
+    REGISTRATION_EMAIL_DELIVERIES {
+        uuid id PK
+        uuid registration_id FK
+        text message_type
+        text recipient
+        text provider
+        text provider_message_id
+        email_delivery_status status
+        smallint attempt_count
+        timestamptz sent_at
     }
 ```
 

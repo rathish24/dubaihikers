@@ -34,8 +34,14 @@ const localBindingConfig = {
 };
 
 export default defineConfig(async ({ mode }) => {
-  const workspaceSupabaseEnv = loadEnv(mode, "../..", "SUPABASE_");
-  for (const [name, value] of Object.entries(workspaceSupabaseEnv)) {
+  const workspaceEnv = loadEnv(mode, "../..", "");
+  const workerServerEnv = Object.fromEntries(
+    Object.entries(workspaceEnv).filter(([name]) =>
+      name.startsWith("SUPABASE_")
+      || name.startsWith("RESEND_")
+      || name === "REGISTRATION_NOTIFICATION_EMAIL"),
+  );
+  for (const [name, value] of Object.entries(workerServerEnv)) {
     process.env[name] ??= value;
   }
 
@@ -48,7 +54,7 @@ export default defineConfig(async ({ mode }) => {
   // Wrangler snapshots its log path while the Cloudflare plugin is imported.
   const { cloudflare } = await import("@cloudflare/vite-plugin");
   const workerBindingConfig = mode === "development"
-    ? { ...localBindingConfig, vars: workspaceSupabaseEnv }
+    ? { ...localBindingConfig, vars: workerServerEnv }
     : localBindingConfig;
 
   return {

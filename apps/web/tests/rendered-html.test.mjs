@@ -65,3 +65,24 @@ test("keeps server and client responsibilities separated", async () => {
   assert.match(dialogHook, /event\.key === "Escape"/);
   assert.match(dialogHook, /previouslyFocused\?\.focus\(\)/);
 });
+
+test("keeps registration email delivery and content outside the route handler", async () => {
+  const [route, emailService, deliveryTask, htmlTemplate, textTemplate] = await Promise.all([
+    readFile(new URL("../app/api/registrations/route.ts", import.meta.url), "utf8"),
+    readFile(new URL("../services/email/registrationEmail.ts", import.meta.url), "utf8"),
+    readFile(new URL("../services/email/sendRegistrationEmail.ts", import.meta.url), "utf8"),
+    readFile(new URL("../services/email/templates/registration-received.html", import.meta.url), "utf8"),
+    readFile(new URL("../services/email/templates/registration-received.txt", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(route, /await repository\.create\(input\)/);
+  assert.match(route, /after\(\(\) =>\s+sendRegistrationEmail/);
+  assert.doesNotMatch(route, /api\.resend\.com|Your next trail starts here/);
+  assert.match(emailService, /REGISTRATION_NOTIFICATION_EMAIL/);
+  assert.match(emailService, /Idempotency-Key/);
+  assert.match(deliveryTask, /markSending/);
+  assert.match(deliveryTask, /markSent/);
+  assert.match(deliveryTask, /markFailed/);
+  assert.match(htmlTemplate, /\{\{reference_number\}\}/);
+  assert.match(textTemplate, /The mountains are calling/);
+});

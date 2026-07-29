@@ -68,9 +68,14 @@ Copy `.env.example` to `apps/web/.env.local` and provide:
 SUPABASE_URL
 SUPABASE_PUBLISHABLE_KEY
 SUPABASE_SECRET_KEY
+REGISTRATION_NOTIFICATION_EMAIL
+RESEND_API_KEY
+RESEND_EMAIL_FROM
 ```
 
 The server uses the project URL and publishable key to read published events under RLS. The registration API uses the same server URL with `SUPABASE_SECRET_KEY` for protected writes. None of these variables are exposed to browser code.
+
+Successful registrations send a booking-reference notification through Resend when all three email variables are configured. During initial testing, `REGISTRATION_NOTIFICATION_EMAIL` is the fixed recipient and `RESEND_EMAIL_FROM` may use Resend's onboarding sender. After domain verification, replace the sender with an address on the verified domain and change delivery to the customer's supplied email.
 
 Apply `supabase/migrations/202607290001_create_events.sql` in the Supabase SQL Editor, then seed the ten sample hikes:
 

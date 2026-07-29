@@ -4,7 +4,13 @@ import {
   SupabaseRegistrationRepository,
   parseRegistrationInput,
 } from "@dubaihikers/registrations";
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
+import { SupabaseEmailDeliveryRepository } from "../../../services/email/deliveryRepository";
+import {
+  createRegistrationEmailService,
+  getRegistrationEmailRecipient,
+} from "../../../services/email/registrationEmail";
+import { sendRegistrationEmail } from "../../../services/email/sendRegistrationEmail";
 import { createAdminClient } from "../../../utils/supabase/admin";
 
 export const dynamic = "force-dynamic";
@@ -12,8 +18,43 @@ export const dynamic = "force-dynamic";
 export async function POST(request: Request) {
   try {
     const input = parseRegistrationInput(await request.json());
-    const repository = new SupabaseRegistrationRepository(createAdminClient());
+    const adminClient = createAdminClient();
+    const repository = new SupabaseRegistrationRepository(adminClient);
     const registration = await repository.create(input);
+    const emailService = createRegistrationEmailService();
+    const recipient = getRegistrationEmailRecipient();
+
+    if (emailService && recipient) {
+      try {
+        const deliveries = new SupabaseEmailDeliveryRepository(adminClient);
+        const delivery = await deliveries.queue({
+          registrationId: registration.id,
+          recipient,
+        });
+        if (delivery.shouldSend) {
+          after(() =>
+            sendRegistrationEmail(
+              {
+                deliveryId: delivery.id,
+                contactName: input.contactName,
+                referenceNumber: registration.referenceNumber,
+              },
+              emailService,
+              deliveries,
+            ),
+          );
+        }
+      } catch (queueError) {
+        console.error(
+          `[registrations] Booking ${registration.referenceNumber} was saved, but its notification email could not be queued.`,
+          queueError,
+        );
+      }
+    } else {
+      console.warn(
+        `[registrations] Booking ${registration.referenceNumber} was saved without an email because Resend is not configured.`,
+      );
+    }
 
     return NextResponse.json({ registration }, { status: 201 });
   } catch (error) {

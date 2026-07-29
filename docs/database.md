@@ -96,6 +96,29 @@ The `create_event_registration` database function locks and rechecks the event, 
 - Browser clients cannot provide authoritative price, total, currency, status, or payment values.
 - `reference_number`, `idempotency_key`, and provider payment references are protected against duplicates.
 
+## Registration email deliveries
+
+`registration_email_deliveries` records each booking-reference notification independently from the registration. One `booking_reference` delivery is allowed per registration.
+
+| Field | PostgreSQL type | Description |
+|---|---|---|
+| `id` | `uuid` | Delivery primary key. |
+| `registration_id` | `uuid` | Parent registration. Deleting the registration deletes its delivery history. |
+| `message_type` | `text` | Stable template identifier, currently `booking_reference`. |
+| `recipient` | `text` | Address used for this delivery attempt. |
+| `provider` | `text` | Delivery provider, currently `resend`. |
+| `provider_message_id` | `text` | Unique identifier returned by the provider. |
+| `status` | `email_delivery_status` | `queued`, `sending`, `sent`, or `failed`. |
+| `attempt_count` | `smallint` | Number of attempted sends. |
+| `last_error` | `text` | Last safe delivery error, limited to 500 characters. |
+| `queued_at` | `timestamptz` | Time the delivery was queued. |
+| `last_attempted_at` | `timestamptz` | Most recent attempt time. |
+| `sent_at` | `timestamptz` | Successful handoff time. |
+| `created_at` | `timestamptz` | Row creation time. |
+| `updated_at` | `timestamptz` | Most recent status update. |
+
+Delivery records are private and writable only through the server-side service role.
+
 ## Seed data
 
 `supabase/seed/events.json` contains ten events across Beginner, Moderate, Advanced, and Expert levels. `pnpm db:seed:events` upserts these rows using the unique event slug.
