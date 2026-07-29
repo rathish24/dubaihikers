@@ -24,13 +24,23 @@ apps/web/
 │   └── events/             Event types and formatting rules
 ├── features/
 │   └── booking/            Client-side booking workflow and state
-├── data/                   Current static event data source
+├── data/                   Server-side event application service
 ├── db/                     Database adapter and schema boundary
 ├── worker/                 Cloudflare runtime entry point
 └── tests/                  Rendering and architecture regression tests
+
+packages/events/
+├── src/types.ts            Event domain model
+├── src/repository.ts       Replaceable repository contract
+└── src/supabase.ts         Supabase repository implementation
+
+supabase/
+├── migrations/             Reviewed PostgreSQL migrations
+├── seed/                   Versioned sample event data
+└── scripts/                Local administrative tooling
 ```
 
-`app/page.tsx` remains a server component. Only the event filtering and interest workflow crosses the client boundary through `BookingExperience`. UI components receive typed data and callbacks rather than reading global state.
+`app/page.tsx` remains a server component. It loads events through the standalone `@dubaihikers/events` repository and passes serializable UI data into `BookingExperience`. UI components do not import Supabase code or environment variables.
 
 See [docs/architecture.md](docs/architecture.md) for design decisions, dependency rules, scalability guidance, and the production backend roadmap.
 
@@ -50,6 +60,26 @@ pnpm dev
 
 Open `http://localhost:3000`.
 
+## Supabase event catalogue
+
+Copy `.env.example` to `apps/web/.env.local` and provide:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+SUPABASE_SECRET_KEY
+```
+
+The website uses the project URL and publishable key to read published events under RLS. The secret key is reserved for local migration and seed administration and must never be exposed to browser code.
+
+Apply `supabase/migrations/202607290001_create_events.sql` in the Supabase SQL Editor, then seed the ten sample hikes:
+
+```bash
+pnpm db:seed:events
+```
+
+The seed is idempotent by event slug and updates matching rows instead of creating duplicates.
+
 ## Validation
 
 ```bash
@@ -58,10 +88,12 @@ pnpm test
 pnpm build
 ```
 
-`pnpm test` performs a production build and verifies server-rendered product content and important architecture boundaries.
+`pnpm test` runs mocked Supabase repository unit tests, performs a production
+build, and verifies server-rendered product content and important architecture
+boundaries. The tests do not read from or write to the live database.
 
 ## Current product scope
 
-The event catalogue is currently supplied by a typed static module. The join form is deliberately front-end only and does not transmit or persist customer information.
+The event catalogue is loaded dynamically from Supabase. The Join form remains front-end only and does not transmit or persist customer information.
 
 Before accepting real leads, connect the form to a validated backend and enforce duplicate detection with the hike ID and normalized phone number.

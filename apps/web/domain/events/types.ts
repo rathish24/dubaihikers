@@ -4,6 +4,7 @@ export type Difficulty = (typeof difficulties)[number];
 
 export type TrailEvent = {
   id: string;
+  slug: string;
   name: string;
   location: string;
   date: string;
@@ -15,9 +16,13 @@ export type TrailEvent = {
   distance: string;
   elevation: string;
   spots: number;
+  availabilityLabel: string;
+  actionLabel: "Join" | "Waitlist" | "Full" | "Closed";
+  canRegister: boolean;
   image: string;
   description: string;
   highlights: string[];
   included: string[];
   meetingPoint: string;
+  tags: string[];
 };

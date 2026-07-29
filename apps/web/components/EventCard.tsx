@@ -26,7 +26,10 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           <strong>{dayMonth}</strong>
         </div>
         <div>
-          <div className="event-status"><span className={`difficulty ${event.difficulty.toLowerCase()}`} >{event.difficulty}</span><span>{event.spots} spots</span></div>
+          <div className="event-status">
+            <span className={`difficulty ${event.difficulty.toLowerCase()}`} >{event.difficulty}</span>
+            <span>{event.spots > 0 ? `${event.spots} spots` : event.availabilityLabel}</span>
+          </div>
           <p className="event-location">{event.location}</p>
           <h3>{event.name}</h3>
           <p className="event-meta">{event.time} · {event.duration} · {event.distance}</p>
@@ -36,7 +39,13 @@ export function EventCard({ event, onSelect }: EventCardProps) {
             <small>PER HIKER</small>
             <strong>{formatMoney(event.price)}</strong>
           </div>
-          <button onClick={() => onSelect(event)} aria-label={`Join ${event.name}`}>Join</button>
+          <button
+            onClick={() => onSelect(event)}
+            aria-label={`${event.actionLabel} ${event.name}`}
+            disabled={!event.canRegister}
+          >
+            {event.actionLabel}
+          </button>
         </div>
       </div>
     </article>

@@ -9,9 +9,10 @@ import { difficulties, type Difficulty, type TrailEvent } from "../../domain/eve
 
 type BookingExperienceProps = {
   events: TrailEvent[];
+  loadError?: string | null;
 };
 
-export function BookingExperience({ events: allEvents }: BookingExperienceProps) {
+export function BookingExperience({ events: allEvents, loadError = null }: BookingExperienceProps) {
   const [difficulty, setDifficulty] = useState<"All" | Difficulty>("All");
   const [selectedEvent, setSelectedEvent] = useState<TrailEvent | null>(null);
 
@@ -65,7 +66,7 @@ export function BookingExperience({ events: allEvents }: BookingExperienceProps)
             {events.map((event) => <EventCard key={event.id} event={event} onSelect={setSelectedEvent} />)}
           </div>
         ) : (
-          <p className="empty-events">No hikes match this filter yet.</p>
+          <p className="empty-events">{loadError ?? "No hikes match this filter yet."}</p>
         )}
       </section>
 

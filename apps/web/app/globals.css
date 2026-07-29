@@ -389,6 +389,13 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
 .event-price > div small { margin-bottom: .2rem; color: var(--text-muted); font-size: .62rem; letter-spacing: .08em; }
 .event-price > div strong { font-size: 1rem; white-space: nowrap; }
 .event-price button { margin: 0; }
+.event-price button:disabled,
+.join-action .primary-button:disabled {
+  cursor: not-allowed;
+  background: var(--surface-subtle);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
 .join-action {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(150px, 220px);

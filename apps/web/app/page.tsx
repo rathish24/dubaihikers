@@ -2,13 +2,15 @@ import { Services } from "../components/Services";
 import { Testimonials } from "../components/Testimonials";
 import { Faqs } from "../components/Faqs";
 import { SectionHeading } from "../components/ui/SectionHeading";
-import { trailEvents } from "../data/trails";
+import { getEvents } from "../data/events";
 import { BookingExperience } from "../features/booking/BookingExperience";
 
-export default function Home() {
+export default async function Home() {
+  const { events, error } = await getEvents();
+
   return (
     <main>
-      <BookingExperience events={trailEvents} />
+      <BookingExperience events={events} loadError={error} />
 
       <Services />
 

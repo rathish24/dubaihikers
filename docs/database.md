@@ -1,78 +1,41 @@
 # Database Design
 
-Firebase Firestore is the proposed application database. The current prototype still uses static typed data in `apps/web/data/trails.ts`.
+Supabase PostgreSQL is the event catalogue database. Event persistence is isolated from the web UI through the standalone `@dubaihikers/events` package.
 
-## Collections
+## Ownership
 
-### `trails`
+- `packages/events/src/types.ts` owns the persisted event domain.
+- `packages/events/src/repository.ts` defines the replaceable data-source contract.
+- `packages/events/src/supabase.ts` maps Supabase rows into domain events.
+- `apps/web/data/events.ts` formats domain events for the existing UI.
+- `supabase/migrations` owns database structure and access policies.
+- `supabase/seed` owns the versioned sample catalogue.
 
-| Field | Type | Notes |
-|---|---|---|
-| `name` | string | Public trail name |
-| `slug` | string | Stable URL identifier |
-| `location` | string | RAK area |
-| `difficulty` | string | beginner, moderate, advanced, expert |
-| `distanceKm` | number | Organiser-verified route length |
-| `elevationM` | number | Organiser-verified elevation gain |
-| `estimatedMinutes` | number | Typical guided duration |
-| `description` | string | Public trail overview |
-| `imageUrl` | string | Hosted image |
-| `active` | boolean | Availability for new events |
+The component and feature layers do not import Supabase code, keys, table names, or snake-case database fields.
 
-### `events`
+## Event access
 
-| Field | Type | Notes |
-|---|---|---|
-| `trailId` | reference | Related trail |
-| `guideId` | reference | Assigned guide |
-| `startsAt` | timestamp | Local start represented in UTC |
-| `meetingPoint` | map | Public label plus private instructions |
-| `priceFils` | number | AED stored as integer fils |
-| `capacity` | number | Maximum confirmed tickets |
-| `confirmedCount` | number | Transactionally maintained |
-| `status` | string | draft, published, sold_out, cancelled, completed |
-| `requirements` | array | Equipment and eligibility |
-| `included` | array | Ticket inclusions |
+The public website reads only rows whose status is `published`. Row-level security prevents anonymous clients from writing events. Administrative writes use protected server or local tooling with a Supabase secret key.
 
-### `customers`
+The web query:
 
-| Field | Type | Notes |
-|---|---|---|
-| `displayName` | string | Customer name |
-| `email` | string | Normalised email |
-| `mobile` | string | E.164 format |
-| `createdAt` | timestamp | Record creation |
+- filters to published events;
+- excludes past events by default;
+- sorts by `starts_at`;
+- disables framework caching so catalogue changes are visible on the next request.
 
-### `bookings`
+## Capacity
 
-| Field | Type | Notes |
-|---|---|---|
-| `eventId` | reference | Booked event |
-| `customerId` | reference | Booking owner |
-| `quantity` | number | Ticket count |
-| `unitPriceFils` | number | Price snapshot |
-| `totalFils` | number | Charged total |
-| `status` | string | pending, confirmed, cancelled, refunded |
-| `paymentReference` | string | Payment-provider identifier |
-| `waiverAcceptedAt` | timestamp | Safety consent timestamp |
-| `createdAt` | timestamp | Booking creation |
+`capacity` is the maximum group size. `available_slots` and `availability` are manually maintained during the lead-generation phase. Submitting interest does not reduce availability. When confirmed registrations are introduced, remaining slots should be calculated transactionally rather than maintained manually.
 
-### `attendees`
+## Seed data
 
-One record per hiker when a booking contains multiple tickets. Store emergency and medical fields with restricted access and a documented retention policy.
+`supabase/seed/events.json` contains ten events across Beginner, Moderate, Advanced, and Expert levels. `pnpm db:seed:events` upserts these rows using the unique event slug.
 
-## Integrity Rules
+## Security
 
-- Prices use integer fils, never floating-point AED.
-- Capacity updates and booking confirmation occur transactionally.
-- Payment webhooks are idempotent.
-- Public clients never set payment or confirmation status.
-- Sensitive attendee data is unavailable to unauthenticated users.
-- Cancelled events cannot accept new bookings.
-
-## Indexes
-
-- Events by `status` and `startsAt`
-- Events by `trailId` and `startsAt`
-- Bookings by `customerId` and `createdAt`
-- Bookings by `eventId` and `status`
+- RLS is enabled on `public.events`.
+- Anonymous and authenticated visitors may select published events.
+- No public insert, update, or delete policy exists.
+- The Supabase secret key is never exposed to the browser.
+- Public meeting-point labels do not contain sensitive final instructions.

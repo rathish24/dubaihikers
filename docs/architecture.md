@@ -22,14 +22,15 @@ Scalability is not a fixed percentage or a guarantee. It must be validated again
 ```mermaid
 flowchart LR
     Visitor["Visitor"] --> Web["Dubai Hikers web app"]
-    Web --> Static["Static event source (current)"]
+    Web --> EventsRepository["Event repository"]
+    EventsRepository --> Supabase["Supabase PostgreSQL"]
     Web --> BookingAPI["Booking API (future)"]
     BookingAPI --> D1["D1 database (future)"]
     BookingAPI --> Payment["Payment provider (future)"]
     BookingAPI --> Email["Confirmation service (future)"]
 ```
 
-The current release implements discovery and a local prototype checkout. The future services are explicit extension points, not simulated production capabilities.
+The current release implements dynamic event discovery through Supabase and a local interest form. Future lead persistence and payment services remain explicit extension points.
 
 ## 3. Source structure
 
@@ -55,7 +56,7 @@ apps/web/
 │   └── booking/
 │       └── BookingExperience.tsx
 ├── data/
-│   └── trails.ts
+│   └── events.ts
 ├── db/
 │   ├── index.ts
 │   └── schema.ts
@@ -93,7 +94,7 @@ These rules prevent circular dependencies and make individual layers replaceable
 
 ## 5. Server and client rendering
 
-`app/page.tsx` is a server component. It renders the marketing content and passes serialized, typed event data into the booking feature.
+`app/page.tsx` is a server component. It reads published events through the standalone repository package and passes serialized, typed event data into the booking feature.
 
 `features/booking/BookingExperience.tsx` is the client boundary. It owns only:
 
@@ -116,11 +117,10 @@ This keeps the static page available in the first server response while limiting
 
 ## 6. Domain model
 
-`domain/events/types.ts` owns the stable event and booking types:
+`packages/events/src/types.ts` owns the persisted event domain. `domain/events/types.ts` owns the web presentation shape:
 
 - `Difficulty`
 - `TrailEvent`
-- `BookingItem`
 
 `domain/events/formatters.ts` owns locale-sensitive presentation rules such as AED currency and event-date formatting. Components do not parse display strings or manually concatenate currency values.
 
@@ -180,21 +180,17 @@ Future automated coverage should add axe-based checks and browser tests for focu
 
 ## 10. Data-source evolution
 
-The current adapter is `data/trails.ts`. Replacing it should not require changing cards, dialogs, formatters, or booking UI.
+The current adapter is `data/events.ts`, backed by the `@dubaihikers/events` repository contract. Replacing Supabase should not require changing cards, dialogs, formatters, or booking UI.
 
 Recommended progression:
 
 ```text
-Static typed data
-    ↓
 Server-side event repository
     ↓
-D1 or CMS adapter
+Supabase adapter
     ↓
 Cached event queries and administrative publishing
 ```
-
-Introduce an `EventRepository` interface when a second data source or real persistence is added. Adding it before then would create abstraction without behavior.
 
 ## 11. Production booking architecture
 

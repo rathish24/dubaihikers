@@ -33,7 +33,10 @@ export function EventModal({ event, onClose }: EventModalProps) {
           <div><small>NEXT HIKE</small><strong>{formatEventDate(event.date)}</strong></div>
         </div>
         <div className="modal-content">
-          <p className="event-modal-status"><span className={`difficulty ${event.difficulty.toLowerCase()}`}>{event.difficulty}</span><span>{event.spots} spots available</span></p>
+          <p className="event-modal-status">
+            <span className={`difficulty ${event.difficulty.toLowerCase()}`}>{event.difficulty}</span>
+            <span>{event.spots > 0 ? `${event.spots} spots available` : event.availabilityLabel}</span>
+          </p>
           <h2 id="event-title">{event.name}</h2>
           <p className="modal-lead">{event.description}</p>
           <div className="trail-stats">
@@ -56,7 +59,13 @@ export function EventModal({ event, onClose }: EventModalProps) {
                   <strong>{formatMoney(event.price)}</strong>
                   <p>Share your details and we&apos;ll contact you with the next steps.</p>
                 </div>
-                <button className="primary-button" onClick={() => setStep("form")}>Join</button>
+                <button
+                  className="primary-button"
+                  onClick={() => setStep("form")}
+                  disabled={!event.canRegister}
+                >
+                  {event.actionLabel}
+                </button>
               </div>
             </>
           )}
@@ -65,7 +74,7 @@ export function EventModal({ event, onClose }: EventModalProps) {
             <form className="join-form" onSubmit={submitInterest}>
               <div className="join-form-heading">
                 <p className="status-label">REGISTER YOUR INTEREST</p>
-                <h3>Join {event.name}</h3>
+                <h3>{event.actionLabel === "Waitlist" ? "Join the waitlist" : "Join"} {event.name}</h3>
                 <p>{formatMoney(event.price)} per hiker. No payment is required now; we&apos;ll contact you to confirm availability and next steps.</p>
               </div>
               <label>

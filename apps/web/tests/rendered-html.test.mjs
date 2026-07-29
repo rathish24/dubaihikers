@@ -33,7 +33,6 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
   assert.match(html, /FIND HIGHER(?:<!-- -->)?<br\/>/);
   assert.match(html, /UPCOMING GUIDED EVENTS/);
   assert.match(html, /View upcoming hikes/i);
-  assert.match(html, /Ghaf Trail/);
   assert.match(html, /aria-label="Filter by difficulty"/);
   assert.match(html, /<h2 id="faqs-title">FAQs<\/h2>/);
   assert.match(html, /Is this suitable for my first mountain hike\?/);
@@ -52,7 +51,9 @@ test("keeps server and client responsibilities separated", async () => {
   ]);
 
   assert.doesNotMatch(page, /"use client"/);
-  assert.match(page, /<BookingExperience events=\{trailEvents\}/);
+  assert.match(page, /await getEvents\(\)/);
+  assert.match(page, /<BookingExperience events=\{events\} loadError=\{error\}/);
+  assert.doesNotMatch(page, /trailEvents|data\/trails/);
   assert.match(bookingFeature, /^"use client"/);
   assert.match(bookingFeature, /aria-pressed=/);
   assert.match(eventTypes, /export type TrailEvent/);
