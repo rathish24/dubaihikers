@@ -25,31 +25,19 @@ export async function POST(request: Request) {
     const recipient = getRegistrationEmailRecipient();
 
     if (emailService && recipient) {
-      try {
-        const deliveries = new SupabaseEmailDeliveryRepository(adminClient);
-        const delivery = await deliveries.queue({
-          registrationId: registration.id,
-          recipient,
-        });
-        if (delivery.shouldSend) {
-          after(() =>
-            sendRegistrationEmail(
-              {
-                deliveryId: delivery.id,
-                contactName: input.contactName,
-                referenceNumber: registration.referenceNumber,
-              },
-              emailService,
-              deliveries,
-            ),
-          );
-        }
-      } catch (queueError) {
-        console.error(
-          `[registrations] Booking ${registration.referenceNumber} was saved, but its notification email could not be queued.`,
-          queueError,
-        );
-      }
+      const deliveries = new SupabaseEmailDeliveryRepository(adminClient);
+      after(() =>
+        sendRegistrationEmail(
+          {
+            registrationId: registration.id,
+            recipient,
+            contactName: input.contactName,
+            referenceNumber: registration.referenceNumber,
+          },
+          emailService,
+          deliveries,
+        ),
+      );
     } else {
       console.warn(
         `[registrations] Booking ${registration.referenceNumber} was saved without an email because Resend is not configured.`,

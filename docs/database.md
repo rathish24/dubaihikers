@@ -108,16 +108,13 @@ The `create_event_registration` database function locks and rechecks the event, 
 | `recipient` | `text` | Address used for this delivery attempt. |
 | `provider` | `text` | Delivery provider, currently `resend`. |
 | `provider_message_id` | `text` | Unique identifier returned by the provider. |
-| `status` | `email_delivery_status` | `queued`, `sending`, `sent`, or `failed`. |
-| `attempt_count` | `smallint` | Number of attempted sends. |
-| `last_error` | `text` | Last safe delivery error, limited to 500 characters. |
-| `queued_at` | `timestamptz` | Time the delivery was queued. |
-| `last_attempted_at` | `timestamptz` | Most recent attempt time. |
-| `sent_at` | `timestamptz` | Successful handoff time. |
+| `status` | `email_delivery_status` | Final one-time result: `delivered` or `undelivered`. |
+| `last_error` | `text` | Safe delivery error for an undelivered email, limited to 500 characters. |
+| `delivered_at` | `timestamptz` | Successful provider handoff time. |
 | `created_at` | `timestamptz` | Row creation time. |
 | `updated_at` | `timestamptz` | Most recent status update. |
 
-Delivery records are private and writable only through the server-side service role.
+Delivery records are private and writable only through the server-side service role. Failed emails are recorded as `undelivered` and are not retried automatically.
 
 ## Seed data
 

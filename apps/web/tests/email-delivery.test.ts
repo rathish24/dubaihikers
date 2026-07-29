@@ -10,17 +10,11 @@ import { sendRegistrationEmail } from "../services/email/sendRegistrationEmail";
 function createDeliveryRepository() {
   const calls: Array<[string, ...unknown[]]> = [];
   const repository: EmailDeliveryRepository = {
-    async queue() {
-      return { id: "delivery-id", shouldSend: true };
+    async recordDelivered(delivery) {
+      calls.push(["recordDelivered", delivery]);
     },
-    async markSending(id) {
-      calls.push(["markSending", id]);
-    },
-    async markSent(id, providerMessageId) {
-      calls.push(["markSent", id, providerMessageId]);
-    },
-    async markFailed(id, error) {
-      calls.push(["markFailed", id, error]);
+    async recordUndelivered(delivery) {
+      calls.push(["recordUndelivered", delivery]);
     },
   };
 
@@ -28,12 +22,13 @@ function createDeliveryRepository() {
 }
 
 const input = {
-  deliveryId: "delivery-id",
+  registrationId: "registration-id",
+  recipient: "organiser@example.com",
   contactName: "Aisha Rahman",
   referenceNumber: "DH-2F3B54E823",
 };
 
-test("tracks a background email from sending to sent", async () => {
+test("records a successful one-time email as delivered", async () => {
   const { calls, repository } = createDeliveryRepository();
   const emailService: RegistrationEmailService = {
     async sendBookingReference(): Promise<EmailSendResult> {
@@ -44,12 +39,15 @@ test("tracks a background email from sending to sent", async () => {
   await sendRegistrationEmail(input, emailService, repository);
 
   assert.deepEqual(calls, [
-    ["markSending", "delivery-id"],
-    ["markSent", "delivery-id", "resend-message-id"],
+    ["recordDelivered", {
+      registrationId: "registration-id",
+      recipient: "organiser@example.com",
+      providerMessageId: "resend-message-id",
+    }],
   ]);
 });
 
-test("records a failed background email without throwing", async () => {
+test("records a failed one-time email as undelivered without retrying", async () => {
   const { calls, repository } = createDeliveryRepository();
   const emailService: RegistrationEmailService = {
     async sendBookingReference(): Promise<EmailSendResult> {
@@ -60,7 +58,10 @@ test("records a failed background email without throwing", async () => {
   await sendRegistrationEmail(input, emailService, repository);
 
   assert.deepEqual(calls, [
-    ["markSending", "delivery-id"],
-    ["markFailed", "delivery-id", "Provider unavailable"],
+    ["recordUndelivered", {
+      registrationId: "registration-id",
+      recipient: "organiser@example.com",
+      error: "Provider unavailable",
+    }],
   ]);
 });

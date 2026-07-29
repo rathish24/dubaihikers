@@ -80,9 +80,8 @@ test("keeps registration email delivery and content outside the route handler", 
   assert.doesNotMatch(route, /api\.resend\.com|Your next trail starts here/);
   assert.match(emailService, /REGISTRATION_NOTIFICATION_EMAIL/);
   assert.match(emailService, /Idempotency-Key/);
-  assert.match(deliveryTask, /markSending/);
-  assert.match(deliveryTask, /markSent/);
-  assert.match(deliveryTask, /markFailed/);
+  assert.match(deliveryTask, /recordDelivered/);
+  assert.match(deliveryTask, /recordUndelivered/);
   assert.match(htmlTemplate, /\{\{reference_number\}\}/);
   assert.match(textTemplate, /The mountains are calling/);
 });

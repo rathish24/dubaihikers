@@ -234,7 +234,7 @@ Never trust client-provided prices, availability, totals, or payment status.
 
 Payment-provider webhooks, rate limiting, audit logging, and confirmation delivery remain future production concerns.
 
-The current registration route queues a minimal booking-reference email after persistence succeeds. Email content is stored in standalone HTML, text, and metadata templates. A Next.js `after()` task sends the email after the registration response is returned and records `queued`, `sending`, `sent`, or `failed` in `registration_email_deliveries`. Delivery failure does not roll back or hide a successful registration.
+The current registration route sends a minimal booking-reference email once after persistence succeeds. Email content is stored in standalone HTML, text, and metadata templates. A Next.js `after()` task performs the send after the registration response is returned and records the final result as `delivered` or `undelivered` in `registration_email_deliveries`. There is no queue or automatic retry; delivery failure does not roll back or hide a successful registration.
 
 ## 12. Persistence model
 
@@ -282,8 +282,7 @@ erDiagram
         text provider
         text provider_message_id
         email_delivery_status status
-        smallint attempt_count
-        timestamptz sent_at
+        timestamptz delivered_at
     }
 ```
 
