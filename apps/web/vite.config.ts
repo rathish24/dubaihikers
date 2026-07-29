@@ -62,6 +62,12 @@ export default defineConfig(async ({ mode }) => {
     // Without this, Vite only loads apps/web/.env* and API routes cannot see
     // SUPABASE_SECRET_KEY.
     envDir: "../..",
+    // Vinext's Cloudflare dev runner cannot execute a workspace package as an
+    // external file: module. Transform notification source through Vite so raw
+    // email templates and the package entry are included in the worker graph.
+    ssr: {
+      noExternal: ["@dubaihikers/notifications"],
+    },
     server: isCodexSeatbeltSandbox
       ? { watch: { useFsEvents: false, usePolling: true } }
       : undefined,

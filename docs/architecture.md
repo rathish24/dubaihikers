@@ -58,7 +58,10 @@ apps/web/
 ├── features/
 │   └── booking/
 │       ├── BookingExperience.tsx
-│       └── registrationClient.ts
+│       ├── RegistrationForm.tsx
+│       ├── RegistrationConfirmation.tsx
+│       ├── registrationClient.ts
+│       └── useRegistration.ts
 ├── data/
 │   └── events.ts
 ├── utils/
@@ -157,7 +160,10 @@ Components follow these contracts:
 Examples:
 
 - `EventCard` renders a `TrailEvent` and emits `onSelect(event)`.
-- `EventModal` renders event details and submits through an injected `RegistrationClient`.
+- `EventModal` renders event details and coordinates the details, form, and confirmation steps.
+- `RegistrationForm` owns registration fields and form-value extraction.
+- `useRegistration` owns submission state, idempotency, API errors, and the injected `RegistrationClient`.
+- `RegistrationConfirmation` renders the successful receipt.
 - `HttpRegistrationClient` implements the browser-to-API transport without exposing Supabase to the component.
 - `SectionHeading` provides a shared section-heading structure.
 - `useDialogAccessibility` provides Escape handling, focus containment, initial focus, and focus restoration for modal surfaces.

@@ -42,11 +42,13 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
 });
 
 test("keeps server and client responsibilities separated", async () => {
-  const [page, bookingFeature, eventTypes, eventModal, dialogHook] = await Promise.all([
+  const [page, bookingFeature, eventTypes, eventModal, registrationForm, registrationHook, dialogHook] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../features/booking/BookingExperience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../domain/events/types.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/EventModal.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../features/booking/RegistrationForm.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../features/booking/useRegistration.ts", import.meta.url), "utf8"),
     readFile(new URL("../components/ui/useDialogAccessibility.ts", import.meta.url), "utf8"),
   ]);
 
@@ -58,8 +60,13 @@ test("keeps server and client responsibilities separated", async () => {
   assert.match(bookingFeature, /aria-pressed=/);
   assert.match(eventTypes, /export type TrailEvent/);
   assert.doesNotMatch(eventTypes, /BookingItem/);
-  assert.match(eventModal, /Book now/);
-  assert.match(eventModal, /customerNotes/);
+  assert.match(eventModal, /<RegistrationForm/);
+  assert.match(eventModal, /<RegistrationConfirmation/);
+  assert.doesNotMatch(eventModal, /<form|new FormData|customerNotes/);
+  assert.match(registrationForm, /Book now/);
+  assert.match(registrationForm, /customerNotes/);
+  assert.match(registrationHook, /RegistrationClient/);
+  assert.match(registrationHook, /crypto\.randomUUID/);
   assert.match(eventModal, /RegistrationClient/);
   assert.doesNotMatch(eventModal, /fetch\(|localStorage|sessionStorage/);
   assert.match(dialogHook, /event\.key === "Escape"/);
