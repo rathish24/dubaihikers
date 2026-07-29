@@ -1,5 +1,6 @@
 import { Services } from "../components/Services";
 import { Testimonials } from "../components/Testimonials";
+import { Faqs } from "../components/Faqs";
 import { SectionHeading } from "../components/ui/SectionHeading";
 import { trailEvents } from "../data/trails";
 import { BookingExperience } from "../features/booking/BookingExperience";
@@ -41,6 +42,8 @@ export default function Home() {
         <a className="cta-link" href="#events">View upcoming hikes</a>
       </section>
 
+      <Faqs />
+
       <footer className="site-footer">
         <div className="footer-main">
           <div className="footer-brand">
@@ -79,7 +82,10 @@ export default function Home() {
 
         <div className="footer-bottom">
           <small>© 2026 DUBAI HIKERS</small>
-          <small>GUIDED MOUNTAIN HIKES · UNITED ARAB EMIRATES</small>
+          <nav className="footer-legal" aria-label="Legal">
+            <a href="/terms-and-conditions">Terms and Conditions</a>
+            <a href="/privacy-policy">Privacy Policy</a>
+          </nav>
         </div>
       </footer>
     </main>

@@ -17,7 +17,6 @@ export function Navigation() {
         <a href="#about" onClick={() => setOpen(false)}>About</a>
         <a href="#reviews" onClick={() => setOpen(false)}>Stories</a>
       </nav>
-      <a className="nav-cta" href="#events">Join a hike</a>
       <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="primary-navigation">
         {open ? "Close" : "Menu"}
       </button>

@@ -35,6 +35,9 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
   assert.match(html, /View upcoming hikes/i);
   assert.match(html, /Ghaf Trail/);
   assert.match(html, /aria-label="Filter by difficulty"/);
+  assert.match(html, /<h2 id="faqs-title">FAQs<\/h2>/);
+  assert.match(html, /Is this suitable for my first mountain hike\?/);
+  assert.match(html, /Does tapping Join confirm my place\?/);
   assert.doesNotMatch(html, /Your site is taking shape|Starter Project/);
   assert.doesNotMatch(html, /[—–↗↘✓△]/);
 });
