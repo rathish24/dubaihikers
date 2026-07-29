@@ -32,9 +32,11 @@ export function EventCard({ event, onSelect }: EventCardProps) {
           <p className="event-meta">{event.time} · {event.duration} · {event.distance}</p>
         </div>
         <div className="event-price">
-          <small>FROM</small>
-          <strong>{formatMoney(event.price)}</strong>
-          <button onClick={() => onSelect(event)}>View hike</button>
+          <div>
+            <small>PER HIKER</small>
+            <strong>{formatMoney(event.price)}</strong>
+          </div>
+          <button onClick={() => onSelect(event)} aria-label={`Join ${event.name}`}>Join</button>
         </div>
       </div>
     </article>

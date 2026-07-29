@@ -1,6 +1,6 @@
 # Dubai Hikers
 
-Dubai Hikers is a responsive guided hiking-events website for mountain adventures across the UAE. Visitors can discover events, filter by difficulty, inspect trail details, select tickets, and move through a prototype checkout.
+Dubai Hikers is a responsive guided hiking-events website for mountain adventures across the UAE. Visitors can discover events, filter by difficulty, inspect trail details, and submit a prototype expression-of-interest form.
 
 ## Technology
 
@@ -30,7 +30,7 @@ apps/web/
 └── tests/                  Rendering and architecture regression tests
 ```
 
-`app/page.tsx` remains a server component. Only the event filtering and booking workflow crosses the client boundary through `BookingExperience`. UI components receive typed data and callbacks rather than reading global state.
+`app/page.tsx` remains a server component. Only the event filtering and interest workflow crosses the client boundary through `BookingExperience`. UI components receive typed data and callbacks rather than reading global state.
 
 See [docs/architecture.md](docs/architecture.md) for design decisions, dependency rules, scalability guidance, and the production backend roadmap.
 
@@ -62,6 +62,6 @@ pnpm build
 
 ## Current product scope
 
-The event catalogue is currently supplied by a typed static module. Checkout is deliberately a prototype and does not persist customer information, reserve inventory, or charge a payment method.
+The event catalogue is currently supplied by a typed static module. The join form is deliberately front-end only and does not transmit or persist customer information.
 
-Before accepting real bookings, implement the service, persistence, inventory, and payment boundaries described in the architecture document.
+Before accepting real leads, connect the form to a validated backend and enforce duplicate detection with the hike ID and normalized phone number.

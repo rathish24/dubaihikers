@@ -40,10 +40,11 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
 });
 
 test("keeps server and client responsibilities separated", async () => {
-  const [page, bookingFeature, eventTypes, dialogHook] = await Promise.all([
+  const [page, bookingFeature, eventTypes, eventModal, dialogHook] = await Promise.all([
     readFile(new URL("../app/page.tsx", import.meta.url), "utf8"),
     readFile(new URL("../features/booking/BookingExperience.tsx", import.meta.url), "utf8"),
     readFile(new URL("../domain/events/types.ts", import.meta.url), "utf8"),
+    readFile(new URL("../components/EventModal.tsx", import.meta.url), "utf8"),
     readFile(new URL("../components/ui/useDialogAccessibility.ts", import.meta.url), "utf8"),
   ]);
 
@@ -52,7 +53,10 @@ test("keeps server and client responsibilities separated", async () => {
   assert.match(bookingFeature, /^"use client"/);
   assert.match(bookingFeature, /aria-pressed=/);
   assert.match(eventTypes, /export type TrailEvent/);
-  assert.match(eventTypes, /export type BookingItem/);
+  assert.doesNotMatch(eventTypes, /BookingItem/);
+  assert.match(eventModal, /Submit interest/);
+  assert.match(eventModal, /not sent or saved anywhere/);
+  assert.doesNotMatch(eventModal, /fetch\(|localStorage|sessionStorage/);
   assert.match(dialogHook, /event\.key === "Escape"/);
   assert.match(dialogHook, /previouslyFocused\?\.focus\(\)/);
 });

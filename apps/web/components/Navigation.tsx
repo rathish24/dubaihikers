@@ -2,12 +2,7 @@
 
 import { useState } from "react";
 
-type NavigationProps = {
-  cartCount: number;
-  onCartOpen: () => void;
-};
-
-export function Navigation({ cartCount, onCartOpen }: NavigationProps) {
+export function Navigation() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -22,9 +17,7 @@ export function Navigation({ cartCount, onCartOpen }: NavigationProps) {
         <a href="#about" onClick={() => setOpen(false)}>About</a>
         <a href="#reviews" onClick={() => setOpen(false)}>Stories</a>
       </nav>
-      <button className="cart-button" onClick={onCartOpen} aria-label={`Open tickets, ${cartCount} selected`}>
-        Tickets <span>{cartCount}</span>
-      </button>
+      <a className="nav-cta" href="#events">Join a hike</a>
       <button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="primary-navigation">
         {open ? "Close" : "Menu"}
       </button>

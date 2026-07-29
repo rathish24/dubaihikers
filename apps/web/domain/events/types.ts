@@ -21,8 +21,3 @@ export type TrailEvent = {
   included: string[];
   meetingPoint: string;
 };
-
-export type BookingItem = {
-  event: TrailEvent;
-  quantity: number;
-};

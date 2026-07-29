@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import Image from "next/image";
 import { formatEventDate, formatMoney } from "../domain/events/formatters";
 import type { TrailEvent } from "../domain/events/types";
@@ -9,14 +9,20 @@ import { useDialogAccessibility } from "./ui/useDialogAccessibility";
 type EventModalProps = {
   event: TrailEvent | null;
   onClose: () => void;
-  onAdd: (event: TrailEvent, quantity: number) => void;
 };
 
-export function EventModal({ event, onClose, onAdd }: EventModalProps) {
-  const [quantity, setQuantity] = useState(1);
+type JoinStep = "details" | "form" | "complete";
+
+export function EventModal({ event, onClose }: EventModalProps) {
+  const [step, setStep] = useState<JoinStep>("details");
   const dialogRef = useDialogAccessibility(Boolean(event), onClose);
 
   if (!event) return null;
+
+  function submitInterest(formEvent: FormEvent<HTMLFormElement>) {
+    formEvent.preventDefault();
+    setStep("complete");
+  }
 
   return (
     <div className="modal-backdrop" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
@@ -36,23 +42,72 @@ export function EventModal({ event, onClose, onAdd }: EventModalProps) {
             <div><small>ELEVATION</small><strong>{event.elevation}</strong></div>
             <div><small>START</small><strong>{event.time}</strong></div>
           </div>
-          <div className="detail-columns">
-            <div><h3>Trail highlights</h3><ul>{event.highlights.map((item) => <li key={item}>{item}</li>)}</ul></div>
-            <div><h3>Your ticket includes</h3><ul>{event.included.map((item) => <li key={item}>{item}</li>)}</ul></div>
-          </div>
-          <p className="meeting"><span>Meeting point</span>{event.meetingPoint}</p>
-          <div className="ticket-action">
-            <div><small>PRICE PER HIKER</small><strong>{formatMoney(event.price)}</strong></div>
-            <div className="quantity" aria-label="Ticket quantity">
-              <button onClick={() => setQuantity(Math.max(1, quantity - 1))} aria-label="Remove ticket">−</button>
-              <span>{quantity}</span>
-              <button onClick={() => setQuantity(Math.min(event.spots, quantity + 1))} aria-label="Add ticket">+</button>
+
+          {step === "details" && (
+            <>
+              <div className="detail-columns">
+                <div><h3>Trail highlights</h3><ul>{event.highlights.map((item) => <li key={item}>{item}</li>)}</ul></div>
+                <div><h3>What to expect</h3><ul>{event.included.map((item) => <li key={item}>{item}</li>)}</ul></div>
+              </div>
+              <p className="meeting"><span>Meeting point</span>{event.meetingPoint}</p>
+              <div className="join-action">
+                <div>
+                  <small>PRICE PER HIKER</small>
+                  <strong>{formatMoney(event.price)}</strong>
+                  <p>Share your details and we&apos;ll contact you with the next steps.</p>
+                </div>
+                <button className="primary-button" onClick={() => setStep("form")}>Join</button>
+              </div>
+            </>
+          )}
+
+          {step === "form" && (
+            <form className="join-form" onSubmit={submitInterest}>
+              <div className="join-form-heading">
+                <p className="status-label">REGISTER YOUR INTEREST</p>
+                <h3>Join {event.name}</h3>
+                <p>{formatMoney(event.price)} per hiker. No payment is required now; we&apos;ll contact you to confirm availability and next steps.</p>
+              </div>
+              <label>
+                FULL NAME
+                <input required name="name" autoComplete="name" placeholder="Your name" />
+              </label>
+              <label>
+                WHATSAPP NUMBER
+                <input required name="tel" autoComplete="tel" type="tel" inputMode="tel" placeholder="+971 50 000 0000" />
+              </label>
+              <label>
+                EMAIL <span>OPTIONAL</span>
+                <input name="email" autoComplete="email" type="email" placeholder="you@example.com" />
+              </label>
+              <label>
+                NUMBER OF HIKERS
+                <select required name="groupSize" defaultValue="1">
+                  {[1, 2, 3, 4, 5, 6].map((number) => <option key={number} value={number}>{number}</option>)}
+                </select>
+              </label>
+              <label className="consent">
+                <input required type="checkbox" />
+                <span>I agree to be contacted about this hike and understand that submitting interest does not confirm a place.</span>
+              </label>
+              <div className="join-form-actions">
+                <button type="button" className="secondary-button" onClick={() => setStep("details")}>Back</button>
+                <button className="primary-button" type="submit">Submit interest</button>
+              </div>
+              <p className="prototype-note">Prototype only. These details are not sent or saved anywhere.</p>
+            </form>
+          )}
+
+          {step === "complete" && (
+            <div className="interest-success" role="status">
+              <p className="status-label">INTEREST RECEIVED</p>
+              <h3>Thanks for joining.</h3>
+              <p>This preview did not save your information. Once the backend is connected, we&apos;ll check your WhatsApp number to prevent duplicate registrations.</p>
+              <button className="primary-button" onClick={onClose}>Done</button>
             </div>
-            <button className="primary-button" onClick={() => onAdd(event, quantity)}>
-              Add {quantity} ticket{quantity > 1 ? "s" : ""} · {formatMoney(event.price * quantity)}
-            </button>
-          </div>
-          <p className="event-disclaimer">Route conditions, timing, and meeting instructions are confirmed by the organiser before each event.</p>
+          )}
+
+          {step !== "complete" && <p className="event-disclaimer">Route conditions, timing, and meeting instructions are confirmed by the organiser before each event.</p>}
         </div>
       </section>
     </div>
