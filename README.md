@@ -74,11 +74,16 @@ SUPABASE_SECRET_KEY
 REGISTRATION_NOTIFICATION_EMAIL
 RESEND_API_KEY
 RESEND_EMAIL_FROM
+GOOGLE_PLACES_API_KEY
+GOOGLE_PLACE_ID
+GOOGLE_WRITE_REVIEW_URL
 ```
 
 The server uses the project URL and publishable key to read published events under RLS. The registration API uses the same server URL with `SUPABASE_SECRET_KEY` for protected writes. None of these variables are exposed to browser code.
 
 Successful registrations send a booking-reference notification through Resend when all three email variables are configured. During initial testing, `REGISTRATION_NOTIFICATION_EMAIL` is the fixed recipient and `RESEND_EMAIL_FROM` may use Resend's onboarding sender. After domain verification, replace the sender with an address on the verified domain and change delivery to the customer's supplied email.
+
+The Trail Stories section reads the aggregate rating and up to three attributed reviews from Google Places API (New) when `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACE_ID` are configured. `GOOGLE_WRITE_REVIEW_URL` is the optional direct review link from Google Business Profile. Google credentials remain server-side.
 
 Apply `supabase/migrations/202607290001_create_events.sql` in the Supabase SQL Editor, then seed the ten sample hikes:
 
@@ -99,6 +104,18 @@ pnpm build
 `pnpm test` runs mocked Supabase repository unit tests, performs a production
 build, and verifies server-rendered product content and important architecture
 boundaries. The tests do not read from or write to the live database.
+
+## Vercel deployment
+
+Set the Vercel project Root Directory to `apps/web`. The checked-in `apps/web/vercel.json` selects the native Next.js build (`pnpm run build:vercel`), which produces the `.next` output expected by Vercel. Local development and OpenAI Sites continue to use Vinext.
+
+Configure the Supabase, Resend, and optional Google Places variables from `.env.example` in the Vercel project environment before deploying.
+
+Verify the Vercel build locally with:
+
+```bash
+pnpm --filter @dubaihikers/web build:vercel
+```
 
 ## Current product scope
 

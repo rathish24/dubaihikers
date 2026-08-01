@@ -9,9 +9,9 @@ const services = [
 
 export function Services() {
   return (
-    <section className="services" id="services">
-      <SectionHeading eyebrow="MORE THAN A WALK">
-        MOVE WITH<br /><i>CONFIDENCE.</i>
+    <section className="services" id="services" aria-labelledby="services-title">
+      <SectionHeading eyebrow="MORE THAN A WALK" headingId="services-title">
+        MOVE WITH <i>CONFIDENCE.</i>
       </SectionHeading>
       <div className="service-list">
         {services.map((service) => (

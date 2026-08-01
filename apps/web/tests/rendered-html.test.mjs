@@ -32,7 +32,9 @@ test("server-renders the Dubai Hikers experience and its primary CTA", async () 
   assert.match(html, /<title>Dubai Hikers \| Guided Mountain Hikes<\/title>/i);
   assert.match(html, /FIND HIGHER(?:<!-- -->)?<br\/>/);
   assert.match(html, /UPCOMING GUIDED EVENTS/);
-  assert.match(html, /View upcoming hikes/i);
+  assert.match(html, /VERIFIED GOOGLE REVIEWS/);
+  assert.doesNotMatch(html, /Maya R\.|Omar K\.|Leena &amp; Sam/);
+  assert.match(html, /Explore upcoming hikes/i);
   assert.match(html, /aria-label="Filter by difficulty"/);
   assert.match(html, /<h2 id="faqs-title">FAQs<\/h2>/);
   assert.match(html, /Is this suitable for my first mountain hike\?/);
@@ -79,8 +81,8 @@ test("keeps registration email delivery and content outside the route handler", 
     readFile(new URL("../config/notifications.ts", import.meta.url), "utf8"),
     readFile(new URL("../../../packages/notifications/src/registrationEmail.ts", import.meta.url), "utf8"),
     readFile(new URL("../../../packages/notifications/src/sendRegistrationEmail.ts", import.meta.url), "utf8"),
-    readFile(new URL("../../../packages/notifications/src/templates/registration-received.html", import.meta.url), "utf8"),
-    readFile(new URL("../../../packages/notifications/src/templates/registration-received.txt", import.meta.url), "utf8"),
+    readFile(new URL("../../../packages/notifications/src/templates/registration-received.html.json", import.meta.url), "utf8"),
+    readFile(new URL("../../../packages/notifications/src/templates/registration-received.txt.json", import.meta.url), "utf8"),
   ]);
 
   assert.match(route, /await repository\.create\(input\)/);

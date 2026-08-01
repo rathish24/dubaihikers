@@ -26,9 +26,9 @@ export default async function Home() {
 
       <Testimonials />
 
-      <section className="safety">
-        <SectionHeading eyebrow="BEFORE YOU BOOK">
-          THE MOUNTAIN<br />SETS THE <i>RULES.</i>
+      <section className="safety" aria-labelledby="safety-title">
+        <SectionHeading eyebrow="BEFORE YOU BOOK" headingId="safety-title">
+          THE MOUNTAIN SETS THE <i>RULES.</i>
         </SectionHeading>
         <div className="safety-grid">
           <article><h3>Choose honestly</h3><p>Match the event difficulty to your current fitness and recent hiking experience.</p></article>
@@ -36,12 +36,6 @@ export default async function Home() {
           <article><h3>Conditions decide</h3><p>Routes may change or be postponed for heat, rain, visibility, or unsafe trail conditions.</p></article>
           <article><h3>Stay together</h3><p>Follow the leader, respect the pace, leave no trace, and never separate from the group.</p></article>
         </div>
-      </section>
-
-      <section className="final-cta" aria-labelledby="final-cta-title">
-        <p className="kicker">YOUR NEXT STORY STARTS EARLY</p>
-        <h2 id="final-cta-title">MEET ME<br />ON THE <i>TRAIL.</i></h2>
-        <a className="cta-link" href="#events">View upcoming hikes</a>
       </section>
 
       <Faqs />

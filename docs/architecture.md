@@ -145,6 +145,8 @@ This keeps the static page available in the first server response while limiting
 
 `domain/events/formatters.ts` owns locale-sensitive presentation rules such as AED currency and event-date formatting. Components do not parse display strings or manually concatenate currency values.
 
+`data/googleReviews.ts` is the server-only Google Places adapter for Trail Stories. It requests only the aggregate rating, review count, Maps links, and review attribution fields required by the UI, limits display to three reviews, and returns `null` when Google is not configured or unavailable. The presentation never substitutes invented testimonials for unavailable Google data.
+
 The current `displayDate` field is retained for data compatibility but new UI code formats the normalized ISO `date`. It can be removed after all external data sources stop supplying it.
 
 ## 7. Component design

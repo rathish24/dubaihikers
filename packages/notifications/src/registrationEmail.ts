@@ -1,5 +1,5 @@
-import registrationHtml from "./templates/registration-received.html?raw";
-import registrationText from "./templates/registration-received.txt?raw";
+import registrationHtml from "./templates/registration-received.html.json";
+import registrationText from "./templates/registration-received.txt.json";
 import registrationTemplate from "./templates/registration-received.json";
 
 export type BookingReferenceEmail = {
@@ -52,11 +52,11 @@ export class ResendRegistrationEmailService implements RegistrationEmailService 
   async sendBookingReference(
     message: BookingReferenceEmail,
   ): Promise<EmailSendResult> {
-    const html = render(registrationHtml, {
+    const html = render(registrationHtml.content, {
       contact_name: escapeHtml(message.contactName),
       reference_number: escapeHtml(message.referenceNumber),
     });
-    const text = render(registrationText, {
+    const text = render(registrationText.content, {
       contact_name: message.contactName,
       reference_number: message.referenceNumber,
     });

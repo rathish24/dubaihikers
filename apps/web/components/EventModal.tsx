@@ -37,9 +37,10 @@ export function EventModal({
   const dialogRef = useDialogAccessibility(Boolean(event), onClose);
 
   if (!event) return null;
+  const eventId = event.id;
 
   async function submitRegistration(values: RegistrationFormValues) {
-    const result = await registration.submit(event.id, values);
+    const result = await registration.submit(eventId, values);
     if (!result) return;
 
     setReceipt(result);

@@ -1,0 +1,3 @@
+{
+  "content": "Hi {{contact_name}},\n\nThanks for booking with Dubai Hikers.\n\nYour booking reference is:\n\n{{reference_number}}\n\nKeep it handy for future communication. We’ll contact you shortly with the next steps.\n\nThe mountains are calling. See you on the trail.\n\nDubai Hikers\n"
+}

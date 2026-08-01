@@ -39,6 +39,7 @@ export default defineConfig(async ({ mode }) => {
     Object.entries(workspaceEnv).filter(([name]) =>
       name.startsWith("SUPABASE_")
       || name.startsWith("RESEND_")
+      || name.startsWith("GOOGLE_")
       || name === "REGISTRATION_NOTIFICATION_EMAIL"),
   );
   for (const [name, value] of Object.entries(workerServerEnv)) {

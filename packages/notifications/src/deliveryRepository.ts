@@ -26,7 +26,7 @@ implements EmailDeliveryRepository {
       registration_id: input.registrationId,
       recipient: input.recipient,
       status: "delivered",
-      provider_message_id: providerMessageId,
+      provider_message_id: input.providerMessageId,
       delivered_at: new Date().toISOString(),
     });
   }
