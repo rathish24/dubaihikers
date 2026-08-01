@@ -37,3 +37,6 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+      - name: Build for Vercel
+        run: pnpm --filter @dubaihikers/web build:vercel

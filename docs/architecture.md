@@ -69,7 +69,10 @@ apps/web/
 │       ├── server.ts
 │       └── admin.ts
 └── tests/
-    └── rendered-html.test.mjs
+    ├── booking.interaction.test.tsx
+    ├── registration.client.test.ts
+    ├── rendered-html.test.mjs
+    └── setup.ts
 
 packages/
 ├── events/
@@ -313,15 +316,20 @@ Current automated checks verify:
 - Server/client boundary preservation
 - Domain type boundary presence
 - Accessible dialog behavior contracts
+- Mobile navigation opening, closing, and top-link behavior
+- Registration form submission through an injected client boundary
+- Confirmation rendering and immediate sold-out catalogue updates
+- API transport success and validation-error mapping
+- Registration form error states
+- Dialog initial focus, Escape handling, and focus restoration
 
 Recommended next layers:
 
 1. Unit tests for formatters and registration status transitions.
-2. React interaction tests for filters and registration form states.
-3. Browser tests for navigation, modal focus, registration, and responsive behavior.
-4. API contract tests when backend endpoints exist.
-5. Integration tests for inventory and payment webhooks.
-6. Performance budgets for JavaScript, images, and Core Web Vitals.
+2. Real-browser end-to-end tests against a deployed preview for responsive layout and browser-specific behavior.
+3. Database-backed API integration tests for registration concurrency and inventory.
+4. Integration tests for payment webhooks when payments are introduced.
+5. Performance budgets for JavaScript, images, and Core Web Vitals.
 
 ## 14. Operational scalability
 

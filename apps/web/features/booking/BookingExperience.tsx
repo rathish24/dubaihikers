@@ -7,10 +7,12 @@ import { EventModal } from "../../components/EventModal";
 import { Navigation } from "../../components/Navigation";
 import { SectionHeading } from "../../components/ui/SectionHeading";
 import { difficulties, type Difficulty, type TrailEvent } from "../../domain/events/types";
+import type { RegistrationClient } from "./registrationClient";
 
 type BookingExperienceProps = {
   events: TrailEvent[];
   loadError?: string | null;
+  registrationClient?: RegistrationClient;
 };
 
 function applyConfirmedRegistration(
@@ -39,7 +41,11 @@ function applyConfirmedRegistration(
   };
 }
 
-export function BookingExperience({ events: allEvents, loadError = null }: BookingExperienceProps) {
+export function BookingExperience({
+  events: allEvents,
+  loadError = null,
+  registrationClient,
+}: BookingExperienceProps) {
   const [difficulty, setDifficulty] = useState<"All" | Difficulty>("All");
   const [catalogueEvents, setCatalogueEvents] = useState(allEvents);
   const [selectedEvent, setSelectedEvent] = useState<TrailEvent | null>(null);
@@ -114,6 +120,7 @@ export function BookingExperience({ events: allEvents, loadError = null }: Booki
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
         onRegistrationComplete={applyRegistration}
+        registrationClient={registrationClient}
       />
     </>
   );
