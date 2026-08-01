@@ -11,7 +11,7 @@ export type RegistrationStatus = (typeof registrationStatuses)[number];
 export type CreateRegistrationInput = {
   eventId: string;
   contactName: string;
-  contactEmail?: string;
+  contactEmail: string;
   contactPhone: string;
   numberOfHikers: number;
   customerNotes?: string;

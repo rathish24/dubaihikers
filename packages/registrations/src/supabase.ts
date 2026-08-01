@@ -42,7 +42,7 @@ export class SupabaseRegistrationRepository implements RegistrationRepository {
     const { data, error } = await this.client.rpc("create_event_registration", {
       p_event_id: input.eventId,
       p_contact_name: input.contactName,
-      p_contact_email: input.contactEmail ?? null,
+      p_contact_email: input.contactEmail,
       p_contact_phone: input.contactPhone,
       p_number_of_hikers: input.numberOfHikers,
       p_customer_notes: input.customerNotes ?? null,

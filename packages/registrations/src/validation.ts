@@ -30,7 +30,7 @@ export function parseRegistrationInput(value: unknown): CreateRegistrationInput 
 
   const eventId = optionalTrimmed(source.eventId) ?? "";
   const contactName = optionalTrimmed(source.contactName) ?? "";
-  const contactEmail = optionalTrimmed(source.contactEmail)?.toLowerCase();
+  const contactEmail = (optionalTrimmed(source.contactEmail) ?? "").toLowerCase();
   const contactPhone = (optionalTrimmed(source.contactPhone) ?? "").replace(/[\s()-]/g, "");
   const customerNotes = optionalTrimmed(source.customerNotes);
   const idempotencyKey = optionalTrimmed(source.idempotencyKey) ?? "";
@@ -44,7 +44,7 @@ export function parseRegistrationInput(value: unknown): CreateRegistrationInput 
   if (contactName.length < 2 || contactName.length > 120) {
     issues.push({ field: "contactName", message: "Enter a name between 2 and 120 characters." });
   }
-  if (contactEmail && (contactEmail.length > 254 || !emailPattern.test(contactEmail))) {
+  if (contactEmail.length > 254 || !emailPattern.test(contactEmail)) {
     issues.push({ field: "contactEmail", message: "Enter a valid email address." });
   }
   if (!phonePattern.test(contactPhone)) {

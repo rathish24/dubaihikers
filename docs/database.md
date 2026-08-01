@@ -46,7 +46,7 @@ The `create_event_registration` database function locks and rechecks the event, 
 | `event_id` | `uuid` | Yes | Foreign key to `events.id`. The event cannot be deleted while registrations reference it. |
 | `user_id` | `uuid` | No | Optional foreign key to `auth.users.id`. It is null for guest bookings. |
 | `contact_name` | `text` | Yes | Name of the main booking contact, limited to 2-120 characters. |
-| `contact_email` | `text` | No | Optional normalized contact email, limited to 254 characters. |
+| `contact_email` | `text` | Yes | Required normalized contact email, limited to 254 characters. |
 | `contact_phone` | `text` | Yes | WhatsApp or mobile number in international E.164 format. |
 | `number_of_hikers` | `smallint` | Yes | Number of event places requested, limited to 1-20. |
 | `customer_notes` | `text` | No | Optional message supplied by the customer, limited to 1,000 characters. |

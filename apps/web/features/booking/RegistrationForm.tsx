@@ -72,8 +72,9 @@ export function RegistrationForm({
         {fieldErrors.contactPhone && <span className="field-error" id="contact-phone-error">{fieldErrors.contactPhone}</span>}
       </label>
       <label>
-        EMAIL <span>OPTIONAL</span>
+        EMAIL
         <input
+          required
           name="contactEmail"
           autoComplete="email"
           type="email"

@@ -12,7 +12,7 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); }
 body:has(.modal-backdrop), body:has(.drawer-backdrop) { overflow: hidden; }
 button, input { font: inherit; }
@@ -296,7 +296,17 @@ img { display: block; }
 }
 body { background: var(--surface); color: var(--text); font-size: var(--step-0); line-height: 1.55; overflow-x: clip; }
 .kicker, .eyebrow { font-size: .75rem; line-height: 1.4; letter-spacing: .14em; }
-.site-header { height: 72px; padding-inline: var(--gutter); }
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 90;
+  width: 100%;
+  height: 72px;
+  padding-inline: var(--gutter);
+  background: rgba(17, 19, 17, .94);
+  color: var(--white);
+  backdrop-filter: blur(14px);
+}
 .nav-links a { min-height: 44px; display: inline-flex; align-items: center; font-size: .75rem; }
 .menu-button { display: none; min-height: 44px; align-items: center; font-size: .75rem; }
 .cart-button span { width: 36px; height: 36px; }

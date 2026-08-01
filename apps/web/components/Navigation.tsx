@@ -7,7 +7,7 @@ export function Navigation() {
 
   return (
     <header className="site-header">
-      <a className="brand" href="#home" aria-label="Dubai Hikers home">
+      <a className="brand" href="#home" aria-label="Dubai Hikers home" onClick={() => setOpen(false)}>
         <span className="brand-wordmark">DUBAI<span aria-hidden="true">/</span>HIKERS</span>
         <small>GUIDED MOUNTAIN HIKES</small>
       </a>

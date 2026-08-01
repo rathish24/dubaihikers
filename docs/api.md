@@ -23,6 +23,8 @@ Returns public event details and current availability.
 
 Validates the customer details, rechecks event availability, and creates a confirmed registration when sufficient places remain.
 
+`contactEmail` is required and is used to send the booking-reference email.
+
 Request:
 
 ```json

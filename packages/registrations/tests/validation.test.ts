@@ -29,15 +29,28 @@ test("normalizes a valid registration request", () => {
   });
 });
 
-test("accepts optional email and customer notes", () => {
+test("accepts optional customer notes", () => {
   const parsed = parseRegistrationInput({
     ...validInput,
-    contactEmail: " ",
     customerNotes: "",
   });
 
-  assert.equal(parsed.contactEmail, undefined);
+  assert.equal(parsed.contactEmail, "aisha@example.com");
   assert.equal(parsed.customerNotes, undefined);
+});
+
+test("requires a valid contact email", () => {
+  assert.throws(
+    () => parseRegistrationInput({ ...validInput, contactEmail: " " }),
+    (error: unknown) => {
+      assert.equal(error instanceof RegistrationValidationError, true);
+      assert.deepEqual(
+        (error as RegistrationValidationError).issues.map(({ field }) => field),
+        ["contactEmail"],
+      );
+      return true;
+    },
+  );
 });
 
 test("reports all invalid customer fields together", () => {
