@@ -303,7 +303,7 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
   width: 100%;
   height: 72px;
   padding-inline: var(--gutter);
-  background: rgba(17, 19, 17, .94);
+  background: var(--surface-strong);
   color: var(--white);
   backdrop-filter: blur(14px);
 }
@@ -679,6 +679,7 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: .35rem;
   justify-content: flex-start;
   align-items: flex-start;
   text-align: left;
@@ -686,7 +687,8 @@ body { background: var(--surface); color: var(--text); font-size: var(--step-0);
 .site-footer .footer-column a {
   justify-content: flex-start;
   text-align: left;
-  min-height: 44px;
+  min-height: 0;
+  padding-block: .2rem;
   display: inline-flex;
   align-items: center;
   color: #c8cac3;
